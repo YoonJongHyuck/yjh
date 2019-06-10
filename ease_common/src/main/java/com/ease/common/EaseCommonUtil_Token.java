@@ -5,28 +5,22 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import net.sf.ehcache.CacheManager;
+//import net.sf.ehcache.CacheManager;
 
 /**
  * common java utility
  * v0.1
  * @author ease
- *
- *1. java UUID ¸¦ »ç¿ëÇÏ¿© À¯ÀÏÅäÅ« »ı¼º
- *2. EhCache, Memcached µîÀ» »ç¿ëÇÒ °æ¿ì »ı¼ºµÈ tokenÀ» Å°·Î
- *   °í°´°èÁ¤ key (id, °í°´¹øÈ£ µî)¸¦ ¼ÂÆÃÇÑ´Ù. (À¯Áö±â°£, ¸®ÇÁ·¹½¬ , »èÁ¦Å¸ÀÌ¹Ö µî °í·Á)
- *3. ÇØ´ç ÅäÅ«À» ÅëÇØ À¯È¿ÇÑ cach°¡ Á¸ÀçÇÏ´Â °æ¿ì, ·Î±×ÀÎ ÀÎÁõÀÌ µÇ¾ú´Ù ¶ó°í ÆÇ´ÜÇÑ´Ù.
- *
  */
 public class EaseCommonUtil_Token {
 	
-	@Autowired
-	CacheManager cacheManager;
+//	@Autowired
+//	CacheManager cacheManager;
 	
-	//ÅäÅ« »ı¼º
-	//¿ì¼± uuid¸¸ ¸¸µé¾î¼­ ³Ñ±â°í º¯°æ»çÇ×¿¡ ´ëÇØ ´õ °í¹ÎÇØ¾ßÇÔ
+	//í† í° ìƒì„±
+	//ìš°ì„  uuidë§Œ ë§Œë“¤ì–´ì„œ ë„˜ê¸°ê³  ë³€ê²½ì‚¬í•­ì— ëŒ€í•´ ë” ê³ ë¯¼í•´ì•¼í•¨
 	public String createToken(){
-		//ÇÏÀÌÇÂ(-)À» Á¦¿ÜÇÑ 32ÀÚ¸®
+		//í•˜ì´í”ˆ(-)ì„ ì œì™¸í•œ 32ìë¦¬
 		return UUID.randomUUID().toString().replaceAll("-", "");
 	}
 	

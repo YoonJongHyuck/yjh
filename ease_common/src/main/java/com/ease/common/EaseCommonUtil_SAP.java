@@ -3,29 +3,20 @@ package com.ease.common;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.UUID;
 
-import org.apache.catalina.manager.util.SessionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import net.sf.ehcache.CacheManager;
 
 /** 
- * SAP - Á¤»êµ¥ÀÌÅÍ SAP Àü¼Û °ü·Ã API
+ * SAP - ê¸°í”„íŠ¸ì¹´ë“œ ë‚´ì—­ SAP ì „ì†¡ ê´€ë ¨ API
  * 
- * sapjco3.dll ¶Ç´Â sapjco3.so ÆÄÀÏÀ» SAP ½Ã½ºÅÛ °ü¸®ÀÚ¿¡°Ô Áö¿ø¹Ş¾Æ¾ß ÇÑ´Ù.
- * 
- * sapjco3 ·ÎÄÃ ¼³Á¤ ¹æ¹ı : lib¿¡ ÀÖ´Â sapjco3.dll ÆÄÀÏÀ» System32¿¡ º¹»çÇÑ´Ù.
- * ¶Ç´Â ÅèÄ¹ È¯°æº¯¼ö ¿¡ -Djava.library.path="C:\yjh\workspace\maeil-backoffice\WebContent\WEB-INF\lib ¿Í °°ÀÌ dllÆÄÀÏÀÌ ÀÖ´Â À§Ä¡¸¦ ¼ÂÆÃÇÑ´Ù.
- * ¸®´ª½º ¼­¹öÀÇ °æ¿ì, sapjco3.so(64bit)¸¦ ¶óÀÌºê·¯¸®¿¡ º¹»çÇÑ ÈÄ LD_LIBRARY_PATH ·Î Àâ¾ÆÁØ´Ù. ( ex: LD_LIBRARY_PATH=/apps/stage/MAEIL_ADMIN/lib/ )
+ * sapjco3 ë¡œì»¬ ì„¤ì • ë°©ë²• : libì— ìˆëŠ” sapjco3.dll íŒŒì¼ì„ System32ì— ë³µì‚¬í•œë‹¤.
+ * ë˜ëŠ” í†°ìº£ í™˜ê²½ë³€ìˆ˜ ì— -Djava.library.path="C:\yjh\workspace\maeil-backoffice\WebContent\WEB-INF\lib ì™€ ê°™ì´ dllíŒŒì¼ì´ ìˆëŠ” ìœ„ì¹˜ë¥¼ ì…‹íŒ…í•œë‹¤.
+ * ë¦¬ëˆ…ìŠ¤ ì„œë²„ì˜ ê²½ìš°, sapjco3.so(64bit)ë¥¼ ë¼ì´ë¸ŒëŸ¬ë¦¬ì— ë³µì‚¬í•œ í›„ LD_LIBRARY_PATH ë¡œ ì¡ì•„ì¤€ë‹¤. ( ex: LD_LIBRARY_PATH=/apps/stage/MAEIL_ADMIN/lib/ )
  */
 
 public class EaseCommonUtil_SAP {
@@ -38,7 +29,7 @@ public class EaseCommonUtil_SAP {
 	
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	//JCO Ä¿³Ø¼Ç Á¤º¸
+	//JCO ì»¤ë„¥ì…˜ ì •ë³´
 	String sapAshost = "";	
 	String sapSysnr	 = "";
 	String sapClient = "";
@@ -47,31 +38,31 @@ public class EaseCommonUtil_SAP {
 	String sapLang	 = "";
 	
 	String coopCoCd  = "";	
-	String abapName	 = "";			//¿¬°áÆÄÀÏ¸íÀ¸·Î »ç¿ëµÊ
-	String eReturnType	 	= "";	//SAPÀü¼Û°á°ú TYPE
-	String eReturnMessage	= "";	//SAPÀü¼Û°á°ú MESSAGE	
-	String functionName	 	= "";	//SAP ÇÔ¼ö¸íÄª
-	String tableName		= "";	//SAP table ¸íÄª
+	String abapName	 = "";			//ì—°ê²°íŒŒì¼ëª…ìœ¼ë¡œ ì‚¬ìš©ë¨
+	String eReturnType	 	= "";	//SAPì „ì†¡ê²°ê³¼ TYPE
+	String eReturnMessage	= "";	//SAPì „ì†¡ê²°ê³¼ MESSAGE	
+	String functionName	 	= "";	//SAP í•¨ìˆ˜ëª…ì¹­
+	String tableName		= "";	//SAP table ëª…ì¹­
 	String userId 	 = "";	
-	String callUser  = "";			//È£Ãâ½Ã½ºÅÛ, 1:BATCH, 2:BACKOFFICE
-	String resCd	 = "";			//ÀÀ´äÄÚµå (00000:¼º°ø, ±âÅ¸) 	
+	String callUser  = "";			//í˜¸ì¶œì‹œìŠ¤í…œ, 1:BATCH, 2:BACKOFFICE
+	String resCd	 = "";			//ì‘ë‹µì½”ë“œ (00000:ì„±ê³µ, ê¸°íƒ€) 	
 	String resMsg	 = "";
 	
 	SimpleDateFormat ymdFormat = new SimpleDateFormat("yyyyMMdd");
 	SimpleDateFormat hmsFormat = new SimpleDateFormat("HHmmss");
-	String trmsYmd = "";	//Àü¼ÛÀÏÀÚ
-	String trmsHms = "";	//Àü¼Û½Ã°£
+	String trmsYmd = "";	//ì „ì†¡ì¼ì
+	String trmsHms = "";	//ì „ì†¡ì‹œê°„
 	
-	Map<String, String> resultMap = new HashMap<String, String>();	//ÀÀ´äÄÚµå, ¸Ş½ÃÁö¸¦ ´ãÀ» ¸Ê
-	Map<String, String> dateMap = new HashMap<String, String>();	//Àü¼ÛÀÏÀÚ ¹× ½Ã°£À» ´ãÀ» ¸Ê
-			
+	Map<String, String> resultMap = new HashMap<String, String>();	//ì‘ë‹µì½”ë“œ, ë©”ì‹œì§€ë¥¼ ë‹´ì„ ë§µ
+	Map<String, String> dateMap = new HashMap<String, String>();	//ì „ì†¡ì¼ì ë° ì‹œê°„ì„ ë‹´ì„ ë§µ
+	
 	/** 
-	 * ±âÇÁÆ®Ä«µå ÃæÀü/ÃæÀüÃë¼Ò ³»¿ª ÇØ´ç °ü°è»ç¿¡ Àü¼Û
-	 * @param REQ_DT Áı°èÀÏÀÚ(YYYYMMDD)	 
-	 * @param COOPCO_CD °ü°è»ç ÄÚµå 	  
+	 * ê¸°í”„íŠ¸ì¹´ë“œ ì¶©ì „/ì¶©ì „ì·¨ì†Œ ë‚´ì—­ í•´ë‹¹ ê´€ê³„ì‚¬ì— ì „ì†¡
+	 * @param REQ_DT ì§‘ê³„ì¼ì(YYYYMMDD)	 
+	 * @param COOPCO_CD ê´€ê³„ì‚¬ ì½”ë“œ 	  
 	 * @param CALL_USER 1:BATCH, 2:ADMIN
-	 * @return RES_CD ÀÀ´äÄÚµå (00000:success, 00010:no data, 00020:sap transmission failure, 00030:sap process failure, 00040:sap success but update failure, 00050: prCrdService error )
-	 * @return RES_MSG ÀÀ´ä¸Ş½ÃÁö
+	 * @return RES_CD ì‘ë‹µì½”ë“œ (00000:success, 00010:no data, 00020:sap transmission failure, 00030:sap process failure, 00040:sap success but update failure, 00050: prCrdService error )
+	 * @return RES_MSG ì‘ë‹µë©”ì‹œì§€
 	 */
 	
 	/*
@@ -79,54 +70,54 @@ public class EaseCommonUtil_SAP {
 		
 		coopCoCd = (String)param.get("COOPCO_CD");
 		
-		//ÇØ´ç °ü°è»çÀÇ ÃæÀü/Ãë¼Ò ³»¿ª µ¥ÀÌÅÍ Á¶È¸ 
+		//í•´ë‹¹ ê´€ê³„ì‚¬ì˜ ì¶©ì „/ì·¨ì†Œ ë‚´ì—­ ë°ì´í„° ì¡°íšŒ 
 		List<Map<String, Object>> giftCardActvPtclList = getGiftCardActvPtclList(coopCoCd,param);
 		
 		if(giftCardActvPtclList.size() == 0){
 			resultMap.put("RES_CD", "00010");
 			resultMap.put("RES_MSG", "no data");
-			return resultMap;		//Á¶È¸°á°ú ¾øÀ½
+			return resultMap;		//ì¡°íšŒê²°ê³¼ ì—†ìŒ
 		}
 				
-		//RFC ÇÔ¼ö¸í ¹× ÂüÁ¶ Å×ÀÌºí ¼ÂÆÃ
-		if("7030".equals(coopCoCd)){			//¿¥Áî¾¾µå
-			functionName = "ZFI_MAEILDO_MEMBERSHIP_SALES";	//SAP ÇÔ¼ö¸í
-			tableName = "I_ZPOST0160";						//Å¸°Ù Å×ÀÌºí¸í
-		}else if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
+		//RFC í•¨ìˆ˜ëª… ë° ì°¸ì¡° í…Œì´ë¸” ì…‹íŒ…
+		if("7030".equals(coopCoCd)){			//ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½
+			functionName = "ZFI_MAEILDO_MEMBERSHIP_SALES";	//SAP ï¿½Ô¼ï¿½ï¿½ï¿½
+			tableName = "I_ZPOST0160";						//Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ï¿½
+		}else if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			functionName = "ZFI_TMEMBERSHIP_SALES_INFO";	
 			tableName = "I_ZPOST1010";						
 		}
 		
 		try {
-			//¿¬°á ÇÁ·ÎÆÛÆ¼ »ı¼º
+			//ì—°ê²° í”„ë¡œí¼í‹° ìƒì„±
 			abapName = setConnectProperties(coopCoCd);
 			
-			//SAP Ä¿³Ø¼Ç ÀÎ½ºÅÏ½º ¾ò¾î¿À±â
+			//SAP ì»¤ë„¥ì…˜ ì¸ìŠ¤í„´ìŠ¤ ì–»ì–´ì˜¤ê¸°
 			JCoDestination destination = JCoDestinationManager.getDestination(abapName);
 			
-			//¿¬°áÁ¤º¸È®ÀÎ
+			//ì—°ê²°ì •ë³´í™•ì¸
 			logger.info("jco Attributes : "+destination.getAttributes());
 			
-			//SAP Ä¿³Ø¼ÇÀ¸·ÎºÎÅÍ ÇÊ¿äÇÔ¼ö ÀÎ½ºÅÏ½º È£Ãâ
+			//SAP ì»¤ë„¥ì…˜ìœ¼ë¡œë¶€í„° í•„ìš”í•¨ìˆ˜ ì¸ìŠ¤í„´ìŠ¤ í˜¸ì¶œ
 			JCoFunction function = destination.getRepository().getFunction(functionName);
 			
 			if(function == null){
 				throw new RuntimeException(functionName+" not found in SAP.");
 			}		
 			
-			//ÇØ´çÇÔ¼öÀÇ Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ °¡Á®¿À±â : Å×ÀÌºíÀº input/output ¸ğµÎ »ç¿ë°¡´É. º» ÄÚµå´Â ÀÔ·Â¿ëÀ¸·Î Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ »ç¿ë
+			//í•´ë‹¹í•¨ìˆ˜ì˜ í…Œì´ë¸” íŒŒë¼ë¯¸í„° ê°€ì ¸ì˜¤ê¸° : í…Œì´ë¸”ì€ input/output ëª¨ë‘ ì‚¬ìš©ê°€ëŠ¥. ë³¸ ì½”ë“œëŠ” ì…ë ¥ìš©ìœ¼ë¡œ í…Œì´ë¸” íŒŒë¼ë¯¸í„° ì‚¬ìš©
 			JCoTable codes = function.getTableParameterList().getTable(tableName);
 			
-			//Àü¼Ûµ¥ÀÌÅÍ ¼ÂÆÃ
+			//ì „ì†¡ë°ì´í„° ì…‹íŒ…
 			codes = setActvPtclSapParam(codes, giftCardActvPtclList, coopCoCd);
 			
-			//SAP ÇÔ¼ö ½ÇÇàÈ£Ãâ
+			//SAP í•¨ìˆ˜ ì‹¤í–‰í˜¸ì¶œ
 			function.execute(destination);
 			
-			//Ã³¸®°á°ú ÆÄ¶ó¹ÌÅÍ °¡Á®¿À±â
+			//ì²˜ë¦¬ê²°ê³¼ íŒŒë¼ë¯¸í„° ê°€ì ¸ì˜¤ê¸°
 			JCoParameterList output = function.getExportParameterList();
 			
-			//¸Ş½ÃÁö À¯Çü: S ¼º°ø, E ¿À·ù, W °æ°í, I Á¤º¸, A Áß´Ü
+			//ë©”ì‹œì§€ ìœ í˜•: S ì„±ê³µ, E ì˜¤ë¥˜, W ê²½ê³ , I ì •ë³´, A ì¤‘ë‹¨
 			eReturnType = (String) output.getStructure("E_RETURN").getValue("TYPE");
 			eReturnMessage = (String) output.getStructure("E_RETURN").getValue("MESSAGE");
 			
@@ -137,21 +128,21 @@ public class EaseCommonUtil_SAP {
 			e.printStackTrace();
 			resultMap.put("RES_CD", "00020");
 			resultMap.put("RES_MSG", "sap transmission failure");
-			return resultMap;		//SAP Àü¼Û ½ÇÆĞ
+			return resultMap;		//SAP ì „ì†¡ ì‹¤íŒ¨
 		}
 		
-		//ÇØ´ç °ü°è»ç ³»¿ªÀü¼Û ¼º°ø ½Ã Àü¼Û¿©ºÎ update
+		//í•´ë‹¹ ê´€ê³„ì‚¬ ë‚´ì—­ì „ì†¡ ì„±ê³µ ì‹œ ì „ì†¡ì—¬ë¶€ update
 		if("S".equals(eReturnType)){
 			try{
 				resCd = updateGiftCardActvPtcl(coopCoCd, param);
 				resMsg = "success";
 			} catch(Exception e) {
 				e.printStackTrace();
-				resCd = "00040" ;		//00040 : SAP Àü¼Û ¼º°ø, ¼º°ø¿©ºÎ ¾÷µ¥ÀÌÆ® ½ÇÆĞ
+				resCd = "00040" ;		//00040 : SAP ì „ì†¡ ì„±ê³µ, ì„±ê³µì—¬ë¶€ ì—…ë°ì´íŠ¸ ì‹¤íŒ¨
 				resMsg = "sap success but update failure";
 			}
 		}else{
-			resCd = "00030" ; //sap Àü¼Û½ÇÆĞ(eReturn:error)
+			resCd = "00030" ; //sap ì „ì†¡ì‹¤íŒ¨(eReturn:error)
 			resMsg = "sap process failure";
 		}
 		
@@ -164,12 +155,12 @@ public class EaseCommonUtil_SAP {
 	*/
 	
 	/** 
-	 * ±âÇÁÆ®Ä«µå ÃæÀü ¼Ò¸ê ³»¿ª ÇØ´ç °ü°è»ç¿¡ Àü¼Û
-	 * @param REQ_DT Áı°èÀÏÀÚ(YYYYMMDD)	 
-	 * @param COOPCO_CD °ü°è»ç ÄÚµå 	  
+	 * ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ç¿¡ ï¿½ï¿½ï¿½ï¿½
+	 * @param REQ_DT ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(YYYYMMDD)	 
+	 * @param COOPCO_CD ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ 	  
 	 * @param CALL_USER 1:BATCH, 2:ADMIN
-	 * @return RES_CD ÀÀ´äÄÚµå (00000:success, 00010:no data, 00020:sap transmission failure, 00030:sap process failure, 00040:sap success but update failure, 00050: prCrdService error )
-	 * @return RES_MSG ÀÀ´ä¸Ş½ÃÁö
+	 * @return RES_CD ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ (00000:success, 00010:no data, 00020:sap transmission failure, 00030:sap process failure, 00040:sap success but update failure, 00050: prCrdService error )
+	 * @return RES_MSG ï¿½ï¿½ï¿½ï¿½Ş½ï¿½ï¿½ï¿½
 	 */
 	
 	/*
@@ -177,51 +168,51 @@ public class EaseCommonUtil_SAP {
 		
 		coopCoCd = (String)param.get("COOPCO_CD");
 		
-		//ÇØ´ç °ü°è»çÀÇ ÃæÀü/Ãë¼Ò ³»¿ª µ¥ÀÌÅÍ Á¶È¸ 
+		//ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸ 
 		List<Map<String, Object>> giftCardActvXtnctPtclList = getGiftCardActvXtnctPtclList(coopCoCd,param);
 		
 		if(giftCardActvXtnctPtclList.size() == 0){
 			resultMap.put("RES_CD", "00010");
 			resultMap.put("RES_MSG", "no data");
-			return resultMap;		//Á¶È¸°á°ú ¾øÀ½
+			return resultMap;		//ï¿½ï¿½È¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		}
 		
-		//RFC ÇÔ¼ö¸í ¹× ÂüÁ¶ Å×ÀÌºí ¼ÂÆÃ
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
+		//RFC ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ï¿½ï¿½
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			functionName = "ZFI_TMEMBERSHIP_EXTINCTION_INFO";	
 			tableName = "I_ZPOST1050";						
 		}
 				
 		try {
-			//¿¬°á ÇÁ·ÎÆÛÆ¼ »ı¼º
+			//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½
 			abapName = setConnectProperties(coopCoCd);
 			
-			//SAP Ä¿³Ø¼Ç ÀÎ½ºÅÏ½º ¾ò¾î¿À±â
+			//SAP Ä¿ï¿½Ø¼ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			JCoDestination destination = JCoDestinationManager.getDestination(abapName);
 			
-			//¿¬°áÁ¤º¸È®ÀÎ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È®ï¿½ï¿½
 			logger.info("jco Attributes : "+destination.getAttributes());
 			
-			//SAP Ä¿³Ø¼ÇÀ¸·ÎºÎÅÍ ÇÊ¿äÇÔ¼ö ÀÎ½ºÅÏ½º È£Ãâ
+			//SAP Ä¿ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ô¼ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ È£ï¿½ï¿½
 			JCoFunction function = destination.getRepository().getFunction(functionName);
 			
 			if(function == null){
 				throw new RuntimeException(functionName+" not found in SAP.");
 			}		
 			
-			//ÇØ´çÇÔ¼öÀÇ Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ °¡Á®¿À±â : Å×ÀÌºíÀº input/output ¸ğµÎ »ç¿ë°¡´É. º» ÄÚµå´Â ÀÔ·Â¿ëÀ¸·Î Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ »ç¿ë
+			//ï¿½Ø´ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ input/output ï¿½ï¿½ï¿½ ï¿½ï¿½ë°¡ï¿½ï¿½. ï¿½ï¿½ ï¿½Úµï¿½ï¿½ ï¿½Ô·Â¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 			JCoTable codes = function.getTableParameterList().getTable(tableName);
 			
-			//Àü¼Ûµ¥ÀÌÅÍ ¼ÂÆÃ
+			//ï¿½ï¿½ï¿½Ûµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			codes = setActvXtnctPtclSapParam(codes, giftCardActvXtnctPtclList, coopCoCd);
 			
-			//SAP ÇÔ¼ö ½ÇÇàÈ£Ãâ
+			//SAP ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½
 			function.execute(destination);
 			
-			//Ã³¸®°á°ú ÆÄ¶ó¹ÌÅÍ °¡Á®¿À±â
+			//Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			JCoParameterList output = function.getExportParameterList();
 			
-			//¸Ş½ÃÁö À¯Çü: S ¼º°ø, E ¿À·ù, W °æ°í, I Á¤º¸, A Áß´Ü
+			//ï¿½Ş½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: S ï¿½ï¿½ï¿½ï¿½, E ï¿½ï¿½ï¿½ï¿½, W ï¿½ï¿½ï¿½, I ï¿½ï¿½ï¿½ï¿½, A ï¿½ß´ï¿½
 			eReturnType = (String) output.getStructure("E_RETURN").getValue("TYPE");
 			eReturnMessage = (String) output.getStructure("E_RETURN").getValue("MESSAGE");
 			
@@ -232,21 +223,21 @@ public class EaseCommonUtil_SAP {
 			e.printStackTrace();
 			resultMap.put("RES_CD", "00020");
 			resultMap.put("RES_MSG", "sap transmission failure");
-			return resultMap;		//SAP Àü¼Û ½ÇÆĞ
+			return resultMap;		//SAP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		}
 		
-		//ÇØ´ç °ü°è»ç ³»¿ªÀü¼Û ¼º°ø ½Ã Àü¼Û¿©ºÎ update
+		//ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ update
 		if("S".equals(eReturnType)){
 			try{
 				resCd = updateGiftCardActvXtnctPtcl(coopCoCd, param);
 				resMsg = "success";
 			} catch(Exception e) {
 				e.printStackTrace();
-				resCd = "00040" ;		//00040 : SAP Àü¼Û ¼º°ø, ¼º°ø¿©ºÎ ¾÷µ¥ÀÌÆ® ½ÇÆĞ
+				resCd = "00040" ;		//00040 : SAP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 				resMsg = "sap success but update failure";
 			}
 		}else{
-			resCd = "00030" ; //sap Àü¼Û½ÇÆĞ(eReturn:error)
+			resCd = "00030" ; //sap ï¿½ï¿½ï¿½Û½ï¿½ï¿½ï¿½(eReturn:error)
 			resMsg = "sap process failure";
 		}
 		
@@ -258,62 +249,62 @@ public class EaseCommonUtil_SAP {
 */
 
 	/** 
-	 * ±âÇÁÆ®Ä«µå »ç¿ë ³»¿ª  ÇØ´ç °ü°è»ç¿¡ Àü¼Û API
-	 * @param REQ_DT Áı°èÀÏÀÚ (¹èÄ¡ ½ÇÇà -1ÀÏ ,YYYYMMDD)	 
-	 * @param COOPCO_CD °ü°è»ç ÄÚµå 			
+	 * ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½  ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ç¿¡ ï¿½ï¿½ï¿½ï¿½ API
+	 * @param REQ_DT ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ -1ï¿½ï¿½ ,YYYYMMDD)	 
+	 * @param COOPCO_CD ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ 			
 	 * @param CALL_USER 1:BATCH, 2:ADMIN		
-	 * @return RES_CD ÀÀ´äÄÚµå (00000:success, 00010:no data, 00020:sap transmission failure, 00030:sap process failure, 00040:sap success but update failure, 00050: prCrdService error )
-	 * @return RES_MSG ÀÀ´ä¸Ş½ÃÁö
+	 * @return RES_CD ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ (00000:success, 00010:no data, 00020:sap transmission failure, 00030:sap process failure, 00040:sap success but update failure, 00050: prCrdService error )
+	 * @return RES_MSG ï¿½ï¿½ï¿½ï¿½Ş½ï¿½ï¿½ï¿½
 	 */
 	/*
 	public Map<String, String> giftCardUsePtclTrms(Map<String, Object> param) {
 		coopCoCd = (String)param.get("COOPCO_CD");
 		
-		//ÇØ´ç °ü°è»çÀÇ »ç¿ë ³»¿ª µ¥ÀÌÅÍ Á¶È¸ 
+		//ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸ 
 		List<Map<String, Object>> giftCardUsePtclList = getGiftCardUsePtclList(coopCoCd,param);
 		
 		if(giftCardUsePtclList.size() == 0){
 			resultMap.put("RES_CD", "00010");
 			resultMap.put("RES_MSG", "no data");
-			return resultMap;		//Á¶È¸°á°ú ¾øÀ½
+			return resultMap;		//ï¿½ï¿½È¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		}
 		
-		//RFC ÇÔ¼ö¸í ¹× ÂüÁ¶ Å×ÀÌºí ¼ÂÆÃ
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
+		//RFC ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ï¿½ï¿½
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			functionName = "ZFI_TMEMBERSHIP_USING_INFO";
 			tableName = "I_ZPOST1040";
 		}
 		
 		try {
-			//¿¬°á ÇÁ·ÎÆÛÆ¼ »ı¼º
+			//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½
 			abapName = setConnectProperties(coopCoCd);
 			
-			//SAP Ä¿³Ø¼Ç ÀÎ½ºÅÏ½º ¾ò¾î¿À±â
+			//SAP Ä¿ï¿½Ø¼ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			JCoDestination destination = JCoDestinationManager.getDestination(abapName);
 			
-			//¿¬°áÁ¤º¸È®ÀÎ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È®ï¿½ï¿½
 			logger.info("jco Attributes : "+destination.getAttributes());
 			
-			//SAP Ä¿³Ø¼ÇÀ¸·ÎºÎÅÍ ÇÊ¿äÇÔ¼ö ÀÎ½ºÅÏ½º È£Ãâ
+			//SAP Ä¿ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ô¼ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ È£ï¿½ï¿½
 			JCoFunction function = destination.getRepository().getFunction(functionName);
 			
 			if(function == null){
 				throw new RuntimeException(functionName+" not found in SAP.");
 			}		
 			
-			//ÇØ´çÇÔ¼öÀÇ Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ °¡Á®¿À±â : Å×ÀÌºíÀº input/output ¸ğµÎ »ç¿ë°¡´É. º» ÄÚµå´Â ÀÔ·Â¿ëÀ¸·Î Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ »ç¿ë
+			//ï¿½Ø´ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ input/output ï¿½ï¿½ï¿½ ï¿½ï¿½ë°¡ï¿½ï¿½. ï¿½ï¿½ ï¿½Úµï¿½ï¿½ ï¿½Ô·Â¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 			JCoTable codes = function.getTableParameterList().getTable(tableName);
 			
-			//Àü¼Ûµ¥ÀÌÅÍ ¼ÂÆÃ
+			//ï¿½ï¿½ï¿½Ûµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			codes = setUsePtclSapParam(codes, giftCardUsePtclList, coopCoCd);
 			
-			//SAP ÇÔ¼ö ½ÇÇàÈ£Ãâ
+			//SAP ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½
 			function.execute(destination);
 			
-			//Ã³¸®°á°ú ÆÄ¶ó¹ÌÅÍ °¡Á®¿À±â
+			//Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			JCoParameterList output = function.getExportParameterList();
 			
-			//¸Ş½ÃÁö À¯Çü: S ¼º°ø, E ¿À·ù, W °æ°í, I Á¤º¸, A Áß´Ü
+			//ï¿½Ş½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: S ï¿½ï¿½ï¿½ï¿½, E ï¿½ï¿½ï¿½ï¿½, W ï¿½ï¿½ï¿½, I ï¿½ï¿½ï¿½ï¿½, A ï¿½ß´ï¿½
 			eReturnType = (String) output.getStructure("E_RETURN").getValue("TYPE");
 			eReturnMessage = (String) output.getStructure("E_RETURN").getValue("MESSAGE");
 			
@@ -324,21 +315,21 @@ public class EaseCommonUtil_SAP {
 			e.printStackTrace();
 			resultMap.put("RES_CD", "00020");
 			resultMap.put("RES_MSG", "sap transmission failure");
-			return resultMap;		//SAP Àü¼Û ½ÇÆĞ
+			return resultMap;		//SAP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		}
 		
-		//ÇØ´ç °ü°è»ç ³»¿ªÀü¼Û ¼º°ø ½Ã Àü¼Û¿©ºÎ update
+		//ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ update
 		if("S".equals(eReturnType)){
 			try{
 				resCd = updateGiftCardUsePtcl(coopCoCd, param);
 				resMsg = "success";
 			} catch(Exception e) {
 				e.printStackTrace();
-				resCd = "00040" ;		//00040 : SAP Àü¼Û ¼º°ø, ¼º°ø¿©ºÎ ¾÷µ¥ÀÌÆ® ½ÇÆĞ
+				resCd = "00040" ;		//00040 : SAP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 				resMsg = "sap success but update failure";
 			}
 		}else{
-			resCd = "00030" ; //sap Àü¼Û½ÇÆĞ(eReturn:error)
+			resCd = "00030" ; //sap ï¿½ï¿½ï¿½Û½ï¿½ï¿½ï¿½(eReturn:error)
 			resMsg = "sap process failure";
 		}
 		
@@ -350,68 +341,68 @@ public class EaseCommonUtil_SAP {
 	*/
 
 	/** 
-	 * ±âÇÁÆ®Ä«µå È¯ºÒ Ã³¸® °á°ú ¼ö½Å API
-	 * @param REQ_DT Áı°èÀÏÀÚ (¹èÄ¡ ½ÇÇà -1ÀÏ ,YYYYMMDD)	 
-	 * @param COOPCO_CD °ü°è»ç ÄÚµå 			
+	 * ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ È¯ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ API
+	 * @param REQ_DT ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ -1ï¿½ï¿½ ,YYYYMMDD)	 
+	 * @param COOPCO_CD ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ 			
 	 * @param CALL_USER 1:BATCH, 2:ADMIN		
-	 * @return RES_CD ÀÀ´äÄÚµå (00000:success, 00010:no data, 00020:sap transmission failure, 00030:sap process failure, 00040:sap success but update failure, 00050: prCrdService error )
-	 * @return RES_MSG ÀÀ´ä¸Ş½ÃÁö
+	 * @return RES_CD ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ (00000:success, 00010:no data, 00020:sap transmission failure, 00030:sap process failure, 00040:sap success but update failure, 00050: prCrdService error )
+	 * @return RES_MSG ï¿½ï¿½ï¿½ï¿½Ş½ï¿½ï¿½ï¿½
 	 */
 	/*
 	public Map<String, String> giftCardRefdReqPtclRecvT(Map<String, Object> param) {
 		coopCoCd = (String)param.get("COOPCO_CD");
 		
-		//±âÇÁÆ®Ä«µå È¯ºÒ ÁøÇàÁß ¸®½ºÆ® Á¶È¸ 
-		param.put("CRD_ST", "92");			//Ä«µå »óÅÂ[00:´ë±â, 10:Á¤»ó, 90:ºĞ½Ç½Å°í, 91:ÇØÁö, 92:È¯ºÒ, 99:Æó±â]
-		param.put("REFD_ST", "03");			//È¯ºÒ »óÅÂ[00:Á¤»ó,01:È¯ºÒ½ÅÃ»,02:È¯ºÒ¿Ï·á, 03:È¯ºÒÁøÇàÁß,99:È¯ºÒ¿À·ù]
-		param.put("REFD_ST_AFTER", "02");	//È¯ºÒ½ÅÃ» ¼º°ø ½Ã º¯È¯ÇÒ »óÅÂ°ª -> 02:È¯ºÒ¿Ï·á
+		//ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½È¸ 
+		param.put("CRD_ST", "92");			//Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½[00:ï¿½ï¿½ï¿½, 10:ï¿½ï¿½ï¿½ï¿½, 90:ï¿½Ğ½Ç½Å°ï¿½, 91:ï¿½ï¿½ï¿½ï¿½, 92:È¯ï¿½ï¿½, 99:ï¿½ï¿½ï¿½]
+		param.put("REFD_ST", "03");			//È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½[00:ï¿½ï¿½ï¿½ï¿½,01:È¯ï¿½Ò½ï¿½Ã»,02:È¯ï¿½Ò¿Ï·ï¿½, 03:È¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,99:È¯ï¿½Ò¿ï¿½ï¿½ï¿½]
+		param.put("REFD_ST_AFTER", "02");	//È¯ï¿½Ò½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ -> 02:È¯ï¿½Ò¿Ï·ï¿½
 		
 		List<Map<String, Object>> giftCardRefdReqPtclRecvList = getGiftCardRefdReqPtclRecvList(coopCoCd,param);
 		
 		if(giftCardRefdReqPtclRecvList.size() == 0){
 			resultMap.put("RES_CD", "00010");
 			resultMap.put("RES_MSG", "no data");
-			return resultMap;		//Á¶È¸°á°ú ¾øÀ½
+			return resultMap;		//ï¿½ï¿½È¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		}
 		
-		//RFC ÇÔ¼ö¸í ¹× ÂüÁ¶ Å×ÀÌºí ¼ÂÆÃ
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
+		//RFC ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ï¿½ï¿½
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			functionName = "ZFI_TMEMBERSHIP_RETURN";	
 			tableName = "T_ZPOST1030";
 		}
 		
 		try {
-			//¿¬°á ÇÁ·ÎÆÛÆ¼ »ı¼º
+			//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½
 			abapName = setConnectProperties(coopCoCd);
 			
-			//SAP Ä¿³Ø¼Ç ÀÎ½ºÅÏ½º ¾ò¾î¿À±â
+			//SAP Ä¿ï¿½Ø¼ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			JCoDestination destination = JCoDestinationManager.getDestination(abapName);
 			
-			//¿¬°áÁ¤º¸È®ÀÎ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È®ï¿½ï¿½
 			logger.info("jco Attributes : "+destination.getAttributes());
 			
-			//SAP Ä¿³Ø¼ÇÀ¸·ÎºÎÅÍ ÇÊ¿äÇÔ¼ö ÀÎ½ºÅÏ½º È£Ãâ
+			//SAP Ä¿ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ô¼ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ È£ï¿½ï¿½
 			JCoFunction function = destination.getRepository().getFunction(functionName);					
 			
 			if(function == null){
 				throw new RuntimeException(functionName+" not found in SAP.");
 			}		
 			
-			//ÇØ´çÇÔ¼öÀÇ Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ °¡Á®¿À±â : Å×ÀÌºíÀº input/output ¸ğµÎ »ç¿ë°¡´É. º» ÄÚµå´Â ÀÔ·Â¿ëÀ¸·Î Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ »ç¿ë
+			//ï¿½Ø´ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ input/output ï¿½ï¿½ï¿½ ï¿½ï¿½ë°¡ï¿½ï¿½. ï¿½ï¿½ ï¿½Úµï¿½ï¿½ ï¿½Ô·Â¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 			JCoTable codes = function.getTableParameterList().getTable(tableName);
 			
-			//Àü¼Ûµ¥ÀÌÅÍ ¼ÂÆÃ
+			//ï¿½ï¿½ï¿½Ûµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			codes = setRefdReqPtclRecvSapParam(codes, giftCardRefdReqPtclRecvList, coopCoCd);
 			
-			//SAP ÇÔ¼ö ½ÇÇàÈ£Ãâ
+			//SAP ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½
 			function.execute(destination);
 			
-			//Ã³¸®°á°ú ÆÄ¶ó¹ÌÅÍ °¡Á®¿À±â
+			//Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			JCoParameterList output = function.getExportParameterList();
 						
 			param = setReturnList(param, codes);
 			
-			//¸Ş½ÃÁö À¯Çü: S ¼º°ø, E ¿À·ù, W °æ°í, I Á¤º¸, A Áß´Ü
+			//ï¿½Ş½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: S ï¿½ï¿½ï¿½ï¿½, E ï¿½ï¿½ï¿½ï¿½, W ï¿½ï¿½ï¿½, I ï¿½ï¿½ï¿½ï¿½, A ï¿½ß´ï¿½
 			eReturnType = (String) output.getStructure("E_RETURN").getValue("TYPE");
 			eReturnMessage = (String) output.getStructure("E_RETURN").getValue("MESSAGE");
 			
@@ -422,23 +413,23 @@ public class EaseCommonUtil_SAP {
 			e.printStackTrace();
 			resultMap.put("RES_CD", "00020");
 			resultMap.put("RES_MSG", "sap transmission failure");
-			return resultMap;		//SAP Àü¼Û ½ÇÆĞ
+			return resultMap;		//SAP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		}
 				
 		
-		//È¯ºÒ Ã³¸® °á°ú Á¶È¸ ¼º°ø ½Ã µ¥ÀÌÅÍ update
+		//È¯ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½È¸ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ update
 		if("S".equals(eReturnType)){
 			try {
 				resCd = updateGiftCardRefdReqPtclRecv(coopCoCd, param);
 				resMsg = "success";
 			} catch (Exception e) {				
 				e.printStackTrace();
-				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();	//°­Á¦ ·Ñ¹éÃ³¸®
-				resCd = "00040" ;		//00040 : SAP Àü¼Û ¼º°ø, ¼º°ø¿©ºÎ ¾÷µ¥ÀÌÆ® ½ÇÆĞ
+				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();	//ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¹ï¿½Ã³ï¿½ï¿½
+				resCd = "00040" ;		//00040 : SAP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 				resMsg = "sap success but update failure";
 			}
 		}else{
-			resCd = "00030" ; //sap Àü¼Û½ÇÆĞ(eReturn:error)
+			resCd = "00030" ; //sap ï¿½ï¿½ï¿½Û½ï¿½ï¿½ï¿½(eReturn:error)
 			resMsg = "sap process failure";
 		}
 		
@@ -451,66 +442,66 @@ public class EaseCommonUtil_SAP {
 */
 	
 	/** 
-	 * ±âÇÁÆ®Ä«µåÈ¯ºÒ ½ÅÃ» ³»¿ª  ÇØ´ç °ü°è»ç¿¡ Àü¼Û API
-	 * @param REQ_DT Áı°èÀÏÀÚ (¹èÄ¡ ½ÇÇà -1ÀÏ ,YYYYMMDD)	 
-	 * @param COOPCO_CD °ü°è»ç ÄÚµå 			
+	 * ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½  ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ç¿¡ ï¿½ï¿½ï¿½ï¿½ API
+	 * @param REQ_DT ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ -1ï¿½ï¿½ ,YYYYMMDD)	 
+	 * @param COOPCO_CD ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ 			
 	 * @param CALL_USER 1:BATCH, 2:ADMIN		
-	 * @return RES_CD ÀÀ´äÄÚµå (00000:success, 00010:no data, 00020:sap transmission failure, 00030:sap process failure, 00040:sap success but update failure, 00050: prCrdService error )
-	 * @return RES_MSG ÀÀ´ä¸Ş½ÃÁö
+	 * @return RES_CD ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ (00000:success, 00010:no data, 00020:sap transmission failure, 00030:sap process failure, 00040:sap success but update failure, 00050: prCrdService error )
+	 * @return RES_MSG ï¿½ï¿½ï¿½ï¿½Ş½ï¿½ï¿½ï¿½
 	 */
 	/*
 	public Map<String, String> giftCardRefdReqPtclTrmsT(Map<String, Object> param) {
 		coopCoCd = (String)param.get("COOPCO_CD");
 		
-		//±âÇÁÆ®Ä«µå È¯ºÒ ½ÅÃ» ¸®½ºÆ® Á¶È¸ 
-		param.put("CRD_ST", "92");			//Ä«µå »óÅÂ[00:´ë±â, 10:Á¤»ó, 90:ºĞ½Ç½Å°í, 91:ÇØÁö, 92:È¯ºÒ, 99:Æó±â]
-		param.put("REFD_ST", "01");			//È¯ºÒ »óÅÂ[00:Á¤»ó,01:È¯ºÒ½ÅÃ»,02:È¯ºÒ¿Ï·á, 03:È¯ºÒÁøÇàÁß,99:È¯ºÒ¿À·ù]
-		param.put("REFD_ST_AFTER", "03");	//È¯ºÒ½ÅÃ» ¼º°ø ½Ã º¯È¯ÇÒ »óÅÂ°ª -> 03:È¯ºÒÁøÇàÁß
+		//ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ È¯ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½È¸ 
+		param.put("CRD_ST", "92");			//Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½[00:ï¿½ï¿½ï¿½, 10:ï¿½ï¿½ï¿½ï¿½, 90:ï¿½Ğ½Ç½Å°ï¿½, 91:ï¿½ï¿½ï¿½ï¿½, 92:È¯ï¿½ï¿½, 99:ï¿½ï¿½ï¿½]
+		param.put("REFD_ST", "01");			//È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½[00:ï¿½ï¿½ï¿½ï¿½,01:È¯ï¿½Ò½ï¿½Ã»,02:È¯ï¿½Ò¿Ï·ï¿½, 03:È¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,99:È¯ï¿½Ò¿ï¿½ï¿½ï¿½]
+		param.put("REFD_ST_AFTER", "03");	//È¯ï¿½Ò½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ -> 03:È¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		
 		List<Map<String, Object>> giftCardRefdReqPtclList = getGiftCardRefdReqPtclList(coopCoCd,param);
 		
 		if(giftCardRefdReqPtclList.size() == 0){
 			resultMap.put("RES_CD", "00010");
 			resultMap.put("RES_MSG", "no data");
-			return resultMap;		//Á¶È¸°á°ú ¾øÀ½
+			return resultMap;		//ï¿½ï¿½È¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		}
 		
-		//RFC ÇÔ¼ö¸í ¹× ÂüÁ¶ Å×ÀÌºí ¼ÂÆÃ
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
+		//RFC ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ï¿½ï¿½
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			functionName = "ZFI_TMEMBERSHIP_SALES_INFO";	
 			tableName = "I_ZPOST1010";
 		}
 		
 		try {
-			//¿¬°á ÇÁ·ÎÆÛÆ¼ »ı¼º
+			//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½
 			abapName = setConnectProperties(coopCoCd);
 			
-			//SAP Ä¿³Ø¼Ç ÀÎ½ºÅÏ½º ¾ò¾î¿À±â
+			//SAP Ä¿ï¿½Ø¼ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			JCoDestination destination = JCoDestinationManager.getDestination(abapName);
 			
-			//¿¬°áÁ¤º¸È®ÀÎ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È®ï¿½ï¿½
 			logger.info("jco Attributes : "+destination.getAttributes());
 			
-			//SAP Ä¿³Ø¼ÇÀ¸·ÎºÎÅÍ ÇÊ¿äÇÔ¼ö ÀÎ½ºÅÏ½º È£Ãâ
+			//SAP Ä¿ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ô¼ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ È£ï¿½ï¿½
 			JCoFunction function = destination.getRepository().getFunction(functionName);
 			
 			if(function == null){
 				throw new RuntimeException(functionName+" not found in SAP.");
 			}		
 			
-			//ÇØ´çÇÔ¼öÀÇ Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ °¡Á®¿À±â : Å×ÀÌºíÀº input/output ¸ğµÎ »ç¿ë°¡´É. º» ÄÚµå´Â ÀÔ·Â¿ëÀ¸·Î Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ »ç¿ë
+			//ï¿½Ø´ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ input/output ï¿½ï¿½ï¿½ ï¿½ï¿½ë°¡ï¿½ï¿½. ï¿½ï¿½ ï¿½Úµï¿½ï¿½ ï¿½Ô·Â¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 			JCoTable codes = function.getTableParameterList().getTable(tableName);
 			
-			//Àü¼Ûµ¥ÀÌÅÍ ¼ÂÆÃ
+			//ï¿½ï¿½ï¿½Ûµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			codes = setRefdReqPtclSapParam(codes, giftCardRefdReqPtclList, coopCoCd);
 			
-			//SAP ÇÔ¼ö ½ÇÇàÈ£Ãâ
+			//SAP ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½
 			function.execute(destination);
 			
-			//Ã³¸®°á°ú ÆÄ¶ó¹ÌÅÍ °¡Á®¿À±â
+			//Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			JCoParameterList output = function.getExportParameterList();
 			
-			//¸Ş½ÃÁö À¯Çü: S ¼º°ø, E ¿À·ù, W °æ°í, I Á¤º¸, A Áß´Ü
+			//ï¿½Ş½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: S ï¿½ï¿½ï¿½ï¿½, E ï¿½ï¿½ï¿½ï¿½, W ï¿½ï¿½ï¿½, I ï¿½ï¿½ï¿½ï¿½, A ï¿½ß´ï¿½
 			eReturnType = (String) output.getStructure("E_RETURN").getValue("TYPE");
 			eReturnMessage = (String) output.getStructure("E_RETURN").getValue("MESSAGE");
 			
@@ -521,22 +512,22 @@ public class EaseCommonUtil_SAP {
 			e.printStackTrace();
 			resultMap.put("RES_CD", "00020");
 			resultMap.put("RES_MSG", "sap transmission failure");
-			return resultMap;		//SAP Àü¼Û ½ÇÆĞ
+			return resultMap;		//SAP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		}
 		
-		//È¯ºÒ ½ÅÃ» ³»¿ª Àü¼Û ¼º°ø ½Ã Àü¼Û¿©ºÎ update
+		//È¯ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ update
 		if("S".equals(eReturnType)){
 			try {
 				resCd = updateGiftCardRefdReqPtcl(coopCoCd, param, giftCardRefdReqPtclList);
 				resMsg = "success";
 			} catch (Exception e) {				
 				e.printStackTrace();
-				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();	//°­Á¦ ·Ñ¹éÃ³¸®
-				resCd = "00040" ;		//00040 : SAP Àü¼Û ¼º°ø, ¼º°ø¿©ºÎ ¾÷µ¥ÀÌÆ® ½ÇÆĞ
+				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();	//ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¹ï¿½Ã³ï¿½ï¿½
+				resCd = "00040" ;		//00040 : SAP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 				resMsg = "sap success but update failure";
 			}
 		}else{
-			resCd = "00030" ; //sap Àü¼Û½ÇÆĞ(eReturn:error)
+			resCd = "00030" ; //sap ï¿½ï¿½ï¿½Û½ï¿½ï¿½ï¿½(eReturn:error)
 			resMsg = "sap process failure";
 		}
 		
@@ -548,62 +539,62 @@ public class EaseCommonUtil_SAP {
 */
 
 	/** 
-	 * ±âÇÁÆ®Ä«µå ÀÎÁö¼¼ ³»¿ª ÇØ´ç °ü°è»ç¿¡ Àü¼Û
-	 * @param REQ_DT ÀÎÁö¼¼ Áı°è Á¶È¸ ±âÁØÀÏ (¹èÄ¡ ½ÇÇà -1ÀÏ ,YYYYMMDD)	
-	 * @param COOPCO_CD °ü°è»ç ÄÚµå 			
+	 * ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ç¿¡ ï¿½ï¿½ï¿½ï¿½
+	 * @param REQ_DT ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ -1ï¿½ï¿½ ,YYYYMMDD)	
+	 * @param COOPCO_CD ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ 			
 	 * @param CALL_USER 1:BATCH, 2:ADMIN		
-	 * @return RES_CD ÀÀ´äÄÚµå (00000:success, 00010:no data, 00020:sap transmission failure, 00030:sap process failure, 00040:sap success but update failure, 00050: prCrdService error )
-	 * @return RES_MSG ÀÀ´ä¸Ş½ÃÁö
+	 * @return RES_CD ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ (00000:success, 00010:no data, 00020:sap transmission failure, 00030:sap process failure, 00040:sap success but update failure, 00050: prCrdService error )
+	 * @return RES_MSG ï¿½ï¿½ï¿½ï¿½Ş½ï¿½ï¿½ï¿½
 	 */
 	/*
 	public Map<String, String> giftCardStmpTaxTrms(Map<String, Object> param) {
 		coopCoCd = (String)param.get("COOPCO_CD");
 		
-		//ÇØ´ç °ü°è»çÀÇ ÀÎÁö¼¼ ³»¿ª µ¥ÀÌÅÍ Á¶È¸ 
+		//ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸ 
 		List<Map<String, Object>> giftCardStmpTaxList = getGiftCardStmpTaxList(coopCoCd,param);
 		
 		if(giftCardStmpTaxList.size() == 0){
 			resultMap.put("RES_CD", "00010");
 			resultMap.put("RES_MSG", "no data");
-			return resultMap;		//Á¶È¸°á°ú ¾øÀ½
+			return resultMap;		//ï¿½ï¿½È¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		}		
 		
-		//RFC ÇÔ¼ö¸í ¹× ÂüÁ¶ Å×ÀÌºí ¼ÂÆÃ
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
-			functionName = "ZFI_TMEMBERSHIP_STAMP_INFO";	//¸ÅÀÏÀ¯¾÷ SAP ÇÔ¼ö¸í
-			tableName = "I_ZPOST1020";						//¸ÅÀÏÀ¯¾÷ Å¸°Ù Å×ÀÌºí¸í
+		//RFC ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ï¿½ï¿½
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			functionName = "ZFI_TMEMBERSHIP_STAMP_INFO";	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ SAP ï¿½Ô¼ï¿½ï¿½ï¿½
+			tableName = "I_ZPOST1020";						//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ï¿½
 		}
 		
 		try {
-			//¿¬°á ÇÁ·ÎÆÛÆ¼ »ı¼º
+			//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½
 			abapName = setConnectProperties(coopCoCd);
 			
-			//SAP Ä¿³Ø¼Ç ÀÎ½ºÅÏ½º ¾ò¾î¿À±â
+			//SAP Ä¿ï¿½Ø¼ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			JCoDestination destination = JCoDestinationManager.getDestination(abapName);
 			
-			//¿¬°áÁ¤º¸È®ÀÎ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È®ï¿½ï¿½
 			logger.info("jco Attributes : "+destination.getAttributes());
 			
-			//SAP Ä¿³Ø¼ÇÀ¸·ÎºÎÅÍ ÇÊ¿äÇÔ¼ö ÀÎ½ºÅÏ½º È£Ãâ
+			//SAP Ä¿ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ô¼ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ È£ï¿½ï¿½
 			JCoFunction function = destination.getRepository().getFunction(functionName);
 			
 			if(function == null){
 				throw new RuntimeException(functionName+" not found in SAP.");
 			}		
 			
-			//ÇØ´çÇÔ¼öÀÇ Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ °¡Á®¿À±â : Å×ÀÌºíÀº input/output ¸ğµÎ »ç¿ë°¡´É. º» ÄÚµå´Â ÀÔ·Â¿ëÀ¸·Î Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ »ç¿ë
+			//ï¿½Ø´ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ input/output ï¿½ï¿½ï¿½ ï¿½ï¿½ë°¡ï¿½ï¿½. ï¿½ï¿½ ï¿½Úµï¿½ï¿½ ï¿½Ô·Â¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 			JCoTable codes = function.getTableParameterList().getTable(tableName);
 			
-			//Àü¼Ûµ¥ÀÌÅÍ ¼ÂÆÃ
+			//ï¿½ï¿½ï¿½Ûµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			codes = setStmpTaxSapParam(codes, giftCardStmpTaxList, coopCoCd);
 			
-			//SAP ÇÔ¼ö ½ÇÇàÈ£Ãâ
+			//SAP ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½
 			function.execute(destination);
 			
-			//Ã³¸®°á°ú ÆÄ¶ó¹ÌÅÍ °¡Á®¿À±â
+			//Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			JCoParameterList output = function.getExportParameterList();
 			
-			//¸Ş½ÃÁö À¯Çü: S ¼º°ø, E ¿À·ù, W °æ°í, I Á¤º¸, A Áß´Ü
+			//ï¿½Ş½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: S ï¿½ï¿½ï¿½ï¿½, E ï¿½ï¿½ï¿½ï¿½, W ï¿½ï¿½ï¿½, I ï¿½ï¿½ï¿½ï¿½, A ï¿½ß´ï¿½
 			eReturnType = (String) output.getStructure("E_RETURN").getValue("TYPE");
 			eReturnMessage = (String) output.getStructure("E_RETURN").getValue("MESSAGE");
 			
@@ -614,22 +605,22 @@ public class EaseCommonUtil_SAP {
 			e.printStackTrace();
 			resultMap.put("RES_CD", "00020");
 			resultMap.put("RES_MSG", "sap transmission failure");
-			return resultMap;		//SAP Àü¼Û ½ÇÆĞ
+			return resultMap;		//SAP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		}
 			
 		
-		//ÇØ´ç °ü°è»ç ³»¿ªÀü¼Û ¼º°ø ½Ã Àü¼Û¿©ºÎ update
+		//ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ update
 		if("S".equals(eReturnType)){
 			try{
 				resCd = updateGiftCardStmpTax(coopCoCd, param);
 				resMsg = "success";
 			} catch(Exception e) {
 				e.printStackTrace();
-				resCd = "00040" ;		//00040 : SAP Àü¼Û ¼º°ø, ¼º°ø¿©ºÎ ¾÷µ¥ÀÌÆ® ½ÇÆĞ
+				resCd = "00040" ;		//00040 : SAP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 				resMsg = "sap success but update failure";
 			}
 		}else{
-			resCd = "00030" ; //sap Àü¼Û½ÇÆĞ(eReturn:error)
+			resCd = "00030" ; //sap ï¿½ï¿½ï¿½Û½ï¿½ï¿½ï¿½(eReturn:error)
 			resMsg = "sap process failure";
 		}
 		
@@ -643,7 +634,7 @@ public class EaseCommonUtil_SAP {
 
 
 	/**
-	 * ÇØ´ç °ü°è»çÀÇ ±âÇÁÆ®Ä«µå ÃæÀü/Ãë¼Ò ³»¿ª µ¥ÀÌÅÍ Á¶È¸
+	 * ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
 	 * @param coopCoCd 
 	 * @param param - REQ_DT 
 	 * @return giftCardActvPtclList
@@ -653,10 +644,10 @@ public class EaseCommonUtil_SAP {
 		
 		List<Map<String, Object>> giftCardActvPtclList = new ArrayList<Map<String, Object>>();
 				
-		//°ü°è»ç¿¡ µû¶ó Á¶È¸
-		if("7030".equals(coopCoCd)){			//¿¥Áî¾¾µå
+		//ï¿½ï¿½ï¿½ï¿½ç¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
+		if("7030".equals(coopCoCd)){			//ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½
 			giftCardActvPtclList = prCrdMapper.selectGiftCardActvPtcl7030(param);	
-		}else if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
+		}else if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			giftCardActvPtclList = prCrdMapper.selectGiftCardActvPtcl7010(param);	
 		}
 				
@@ -665,7 +656,7 @@ public class EaseCommonUtil_SAP {
 	*/
 	
 	/**
-	 * ÇØ´ç °ü°è»çÀÇ ±âÇÁÆ®Ä«µå ÃæÀü ¼Ò¸ê ³»¿ª µ¥ÀÌÅÍ Á¶È¸
+	 * ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
 	 * @param coopCoCd 
 	 * @param param - REQ_DT 
 	 * @return giftCardActvPtclList
@@ -675,9 +666,9 @@ public class EaseCommonUtil_SAP {
 		
 		List<Map<String, Object>> giftCardActvXtnctPtclList = new ArrayList<Map<String, Object>>();
 		
-		//°ü°è»ç¿¡ µû¶ó Á¶È¸
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
-			//CALL_USER¿¡ µû¶ó REQ_DT º¯Çü, ADMIN¿¡¼­´ÂYYYYMM00 ÀÇ ÇüÅÂ·Î µé¾î¿Â´Ù.
+		//ï¿½ï¿½ï¿½ï¿½ç¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//CALL_USERï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ REQ_DT ï¿½ï¿½ï¿½ï¿½, ADMINï¿½ï¿½ï¿½ï¿½ï¿½ï¿½YYYYMM00 ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½Â´ï¿½.
 			if("2".equals(param.get("CALL_USER"))){
 				param.put("REQ_DT", ((String)param.get("REQ_DT")).substring(0,6));
 			}
@@ -689,7 +680,7 @@ public class EaseCommonUtil_SAP {
 	*/
 	
 	/**
-	 * ÇØ´ç °ü°è»çÀÇ ±âÇÁÆ®Ä«µå »ç¿ë ³»¿ª µ¥ÀÌÅÍ Á¶È¸
+	 * ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
 	 * @param coopCoCd 
 	 * @param param - REQ_DT 
 	 * @return giftCardUsePtclList
@@ -699,8 +690,8 @@ public class EaseCommonUtil_SAP {
 		
 		List<Map<String, Object>> giftCardUsePtclList = new ArrayList<Map<String, Object>>();
 		
-		//°ü°è»ç¿¡ µû¶ó Á¶È¸
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
+		//ï¿½ï¿½ï¿½ï¿½ç¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			giftCardUsePtclList = prCrdMapper.selectGiftCardUsePtcl7010(param);	
 		}
 				
@@ -710,19 +701,19 @@ public class EaseCommonUtil_SAP {
 	
 	
 	/**
-	 * ±âÇÁÆ®Ä«µå È¯ºÒ ÁøÇàÁß µ¥ÀÌÅÍ Á¶È¸
+	 * ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
 	 * @param coopCoCd 
 	 * @param param - REQ_DT 
-	 * @param param - CRD_ST Ä«µå »óÅÂ[92:È¯ºÒ]
-	 * @param param - REFD_ST È¯ºÒ »óÅÂ[03:È¯ºÒÁøÇàÁß]
+	 * @param param - CRD_ST Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½[92:È¯ï¿½ï¿½]
+	 * @param param - REFD_ST È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½[03:È¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]
 	 * @return getGiftCardRefdReqPtclList
 	 */
 	/*
 	private List<Map<String, Object>> getGiftCardRefdReqPtclRecvList(String coopCoCd, Map<String, Object> param) {
 		List<Map<String, Object>> giftCardRefdReqPtclRecvList = new ArrayList<Map<String, Object>>();
 		
-		//°ü°è»ç¿¡ µû¶ó Á¶È¸
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
+		//ï¿½ï¿½ï¿½ï¿½ç¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			giftCardRefdReqPtclRecvList = prCrdMapper.selectGiftCardRefdReqPtclRecv7010(param);	
 		}
 				
@@ -731,19 +722,19 @@ public class EaseCommonUtil_SAP {
 	*/
 	
 	/**
-	 * ±âÇÁÆ®Ä«µå È¯ºÒ ½ÅÃ» ³»¿ª µ¥ÀÌÅÍ Á¶È¸
+	 * ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ È¯ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
 	 * @param coopCoCd 
 	 * @param param - REQ_DT 
-	 * @param param - CRD_ST Ä«µå »óÅÂ[92:È¯ºÒ]
-	 * @param param - REFD_ST È¯ºÒ »óÅÂ[01:È¯ºÒ½ÅÃ»]
+	 * @param param - CRD_ST Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½[92:È¯ï¿½ï¿½]
+	 * @param param - REFD_ST È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½[01:È¯ï¿½Ò½ï¿½Ã»]
 	 * @return getGiftCardRefdReqPtclList
 	 */
 	/*
 	private List<Map<String, Object>> getGiftCardRefdReqPtclList(String coopCoCd, Map<String, Object> param) {
 		List<Map<String, Object>> giftCardRefdReqPtclList = new ArrayList<Map<String, Object>>();
 		
-		//°ü°è»ç¿¡ µû¶ó Á¶È¸
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
+		//ï¿½ï¿½ï¿½ï¿½ç¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			giftCardRefdReqPtclList = prCrdMapper.selectGiftCardRefdReqPtcl7010(param);	
 		}
 		
@@ -752,9 +743,9 @@ public class EaseCommonUtil_SAP {
 	*/
 	
 	/**
-	 * ÇØ´ç °ü°è»çÀÇ ±âÇÁÆ®Ä«µå ÀÎÁö¼¼ ³»¿ª µ¥ÀÌÅÍ Á¶È¸
+	 * ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
 	 * @param coopCoCd 
-	 * @param param - REQ_DT ÀÎÁö¼¼ Áı°è Á¶È¸ ±âÁØÀÏ (¹èÄ¡ ½ÇÇà -1ÀÏ ,YYYYMMDD)	
+	 * @param param - REQ_DT ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ -1ï¿½ï¿½ ,YYYYMMDD)	
 	 * @param param - CALL_USER 1:BATCH, 2:ADMIN	 
 	 * @return giftCardStmpTaxList
 	 */
@@ -763,9 +754,9 @@ public class EaseCommonUtil_SAP {
 		
 		List<Map<String, Object>> giftCardStmpTaxList = new ArrayList<Map<String, Object>>();
 		
-		//°ü°è»ç¿¡ µû¶ó Á¶È¸
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
-			//CALL_USER¿¡ µû¶ó REQ_DT º¯Çü, ADMIN¿¡¼­´ÂYYYYMM00 ÀÇ ÇüÅÂ·Î µé¾î¿Â´Ù.
+		//ï¿½ï¿½ï¿½ï¿½ç¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//CALL_USERï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ REQ_DT ï¿½ï¿½ï¿½ï¿½, ADMINï¿½ï¿½ï¿½ï¿½ï¿½ï¿½YYYYMM00 ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½Â´ï¿½.
 			if("2".equals(param.get("CALL_USER"))){
 				param.put("REQ_DT", ((String)param.get("REQ_DT")).substring(0,6));
 			}
@@ -777,7 +768,7 @@ public class EaseCommonUtil_SAP {
 	*/
 
 	/**
-	 * ±âÇÁÆ®Ä«µå ÃæÀü/ÃæÀüÃë¼Ò µ¥ÀÌÅÍ ¼ÂÆÃ
+	 * ê¸°í”„íŠ¸ì¹´ë“œ ì¶©ì „/ì¶©ì „ì·¨ì†Œ ë°ì´í„° ì…‹íŒ…
 	 * @param JCoTable codes 
 	 * @param giftCardActvPtclList 
 	 * @param coopCoCd 
@@ -786,46 +777,46 @@ public class EaseCommonUtil_SAP {
 	/*
 	private JCoTable setActvPtclSapParam(JCoTable codes, List<Map<String, Object>> giftCardActvPtclList, String coopCoCd) {
 		
-		setCurDate();	//ÇöÀç½Ã°£ ¼ÂÆÃ
+		setCurDate();	//í˜„ì¬ì‹œê°„ ì…‹íŒ…
 				
-		if("7030".equals(coopCoCd)){			//¿¥Áî¾¾µå
-			//·çÇÁµ¹¸é¼­ Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ¿¡ µ¥ÀÌÅÍ ¼¼ÆÃ
+		if("7030".equals(coopCoCd)){			//ì— ì¦ˆì”¨ë“œ
+			//ë£¨í”„ëŒë©´ì„œ í…Œì´ë¸” íŒŒë¼ë¯¸í„°ì— ë°ì´í„° ì„¸íŒ…
 			for(Map<String, Object> eachMap : giftCardActvPtclList){
 				codes.appendRow();
 				
-				codes.setValue("BUKRS"			, "8000"						);	//È¸»çÄÚµå, I/F ¾Æ´Ô'8000' À¸·Î °íÁ¤
-				codes.setValue("ZSYS_GUBUN"		, "5"							);	//½Ã½ºÅÛ ±¸ºĞ,  1: ±âÁ¸ ¿¥Áî¾¾µåPOS , 5:ÅëÇÕ¸â¹ö½± ½Ã½ºÅÛ
-				codes.setValue("ZGUBUN"			, eachMap.get("SETL_DV")		);	//¾÷¹«±¸ºĞ, 1: Membership ÃæÀü, 2.  Membership Ãë¼Ò, 3:  Membership È¯ºÒ
-				codes.setValue("BLDAT"			, eachMap.get("SETL_DT")		);	//¸¶°¨ÀÏÀÚ, POS ÀÏ¸¶°¨ ÀÏÀÚ (ÅëÇÕ¸â¹ö½± ÀÏ¸¶°¨ ÀÏÀÚ)
-				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")			);	//¼ø¹ø,  ÇØ´çÀÏ °Å·¡ÀÇ ¼øÂ÷¹øÈ£
-				codes.setValue("KUNNR"			, eachMap.get("STOR_CD")		);	//¿¥Áî¾¾µå ¸ÅÀåÄÚµå=(SAP°í°´ÄÚµå), °Å·¡¹ß»ı ¿¥Áî¾¾µå ¸ÅÀåÄÚµå
-				codes.setValue("ZCASH_AMT"		, eachMap.get("CASH_AMT_SUM")	);	//Çö±İ°áÀç±İ¾×, Çö±İ °Å·¡ ¹ß»ı ±İ¾×
-				codes.setValue("ZCARD_AMT"		, eachMap.get("CRD_AMT_SUM")	);	//Ä«µå°áÀç±İ¾×, Ä«µå °Å·¡ ¹ß»ı ±İ¾×
-//				codes.setValue("ZWEB_AMT"		, eachMap.get("")				);	//WEB °áÀç±İ¾×, WEB °Å·¡ ¹ß»ı±İ¾×(LG U+)
-//				codes.setValue("ZDC_CASH_AMT"	, eachMap.get("")				);	//ÇÒÀÎ ÆÇ¸ÅÀå·Á±İ (Çö±İ°Å·¡)
-//				codes.setValue("ZUP_CASH_AMT"	, eachMap.get("")				);	//ÇÒÁõ ÆÇ¸ÅÀå·Á±İ (Çö±İ°Å·¡)
-//				codes.setValue("ZDC_CARD_AMT"	, eachMap.get("")				);	//ÇÒÀÎ ÆÇ¸ÅÀå·Á±İ (Ä«µå°Å·¡)
-//				codes.setValue("ZUP_CARD_AMT"	, eachMap.get("")				);	//ÇÒÁõ ÆÇ¸ÅÀå·Á±İ (Ä«µå°Å·¡)
-//				codes.setValue("KOSTL"			, eachMap.get("")				);	//¸ÅÀåÄÚ½ºÆ®¼¾ÅÍ
-//				codes.setValue("BANKL"			, eachMap.get("")				);	//ÀºÇàÄÚµå, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÇØ´ç ÀºÇàÄÚµå 3ÀÚ¸®
-//				codes.setValue("BANKN"			, eachMap.get("")				);	//°èÁÂ¹øÈ£, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÀÛ¼º
-//				codes.setValue("KOINH"			, eachMap.get("")				);	//¿¹±İÁÖ¸í, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÀÛ¼º
-//				codes.setValue("ZPERSONAL_NO"	, eachMap.get("")				);	//È¸¿ø¹øÈ£, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÀÛ¼º
-//				codes.setValue("ZCARD_NO"		, eachMap.get("")				);	//Ä«µå¹øÈ£, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÀÛ¼º
-				codes.setValue("IFDAT"			, trmsYmd						);	//Àü¼ÛÀÏÀÚ
-				codes.setValue("IFZET"			, trmsHms						);	//Àü¼Û½Ã°£
-				codes.setValue("IFNAM"			, "MAEILDO"						);	//Àü¼ÛÀÚ, Àü¼ÛID
+				codes.setValue("BUKRS"			, "8000"						);	//íšŒì‚¬ì½”ë“œ, I/F ì•„ë‹˜'8000' ìœ¼ë¡œ ê³ ì •
+				codes.setValue("ZSYS_GUBUN"		, "5"							);	//ì‹œìŠ¤í…œ êµ¬ë¶„,  1: ê¸°ì¡´ ì— ì¦ˆì”¨ë“œPOS , 5:í†µí•©ë©¤ë²„ì‰½ ì‹œìŠ¤í…œ
+				codes.setValue("ZGUBUN"			, eachMap.get("SETL_DV")		);	//ì—…ë¬´êµ¬ë¶„, 1: Membership ì¶©ì „, 2.  Membership ì·¨ì†Œ, 3:  Membership í™˜ë¶ˆ
+				codes.setValue("BLDAT"			, eachMap.get("SETL_DT")		);	//ë§ˆê°ì¼ì, POS ì¼ë§ˆê° ì¼ì (í†µí•©ë©¤ë²„ì‰½ ì¼ë§ˆê° ì¼ì)
+				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")			);	//ìˆœë²ˆ,  í•´ë‹¹ì¼ ê±°ë˜ì˜ ìˆœì°¨ë²ˆí˜¸
+				codes.setValue("KUNNR"			, eachMap.get("STOR_CD")		);	//ì— ì¦ˆì”¨ë“œ ë§¤ì¥ì½”ë“œ=(SAPê³ ê°ì½”ë“œ), ê±°ë˜ë°œìƒ ì— ì¦ˆì”¨ë“œ ë§¤ì¥ì½”ë“œ
+				codes.setValue("ZCASH_AMT"		, eachMap.get("CASH_AMT_SUM")	);	//í˜„ê¸ˆê²°ì¬ê¸ˆì•¡, í˜„ê¸ˆ ê±°ë˜ ë°œìƒ ê¸ˆì•¡
+				codes.setValue("ZCARD_AMT"		, eachMap.get("CRD_AMT_SUM")	);	//ì¹´ë“œê²°ì¬ê¸ˆì•¡, ì¹´ë“œ ê±°ë˜ ë°œìƒ ê¸ˆì•¡
+//				codes.setValue("ZWEB_AMT"		, eachMap.get("")				);	//WEB ê²°ì¬ê¸ˆì•¡, WEB ê±°ë˜ ë°œìƒê¸ˆì•¡(LG U+)
+//				codes.setValue("ZDC_CASH_AMT"	, eachMap.get("")				);	//í• ì¸ íŒë§¤ì¥ë ¤ê¸ˆ (í˜„ê¸ˆê±°ë˜)
+//				codes.setValue("ZUP_CASH_AMT"	, eachMap.get("")				);	//í• ì¦ íŒë§¤ì¥ë ¤ê¸ˆ (í˜„ê¸ˆê±°ë˜)
+//				codes.setValue("ZDC_CARD_AMT"	, eachMap.get("")				);	//í• ì¸ íŒë§¤ì¥ë ¤ê¸ˆ (ì¹´ë“œê±°ë˜)
+//				codes.setValue("ZUP_CARD_AMT"	, eachMap.get("")				);	//í• ì¦ íŒë§¤ì¥ë ¤ê¸ˆ (ì¹´ë“œê±°ë˜)
+//				codes.setValue("KOSTL"			, eachMap.get("")				);	//ë§¤ì¥ì½”ìŠ¤íŠ¸ì„¼í„°
+//				codes.setValue("BANKL"			, eachMap.get("")				);	//ì€í–‰ì½”ë“œ, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ í•´ë‹¹ ì€í–‰ì½”ë“œ 3ìë¦¬
+//				codes.setValue("BANKN"			, eachMap.get("")				);	//ê³„ì¢Œë²ˆí˜¸, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ ì‘ì„±
+//				codes.setValue("KOINH"			, eachMap.get("")				);	//ì˜ˆê¸ˆì£¼ëª…, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ ì‘ì„±
+//				codes.setValue("ZPERSONAL_NO"	, eachMap.get("")				);	//íšŒì›ë²ˆí˜¸, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ ì‘ì„±
+//				codes.setValue("ZCARD_NO"		, eachMap.get("")				);	//ì¹´ë“œë²ˆí˜¸, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ ì‘ì„±
+				codes.setValue("IFDAT"			, trmsYmd						);	//ì „ì†¡ì¼ì
+				codes.setValue("IFZET"			, trmsHms						);	//ì „ì†¡ì‹œê°„
+				codes.setValue("IFNAM"			, "MAEILDO"						);	//ì „ì†¡ì, ì „ì†¡ID
 			}
-		}else if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
-			//·çÇÁµ¹¸é¼­ Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ¿¡ µ¥ÀÌÅÍ ¼¼ÆÃ
+		}else if("7010".equals(coopCoCd)){		//ë§¤ì¼ìœ ì—…
+			//ë£¨í”„ëŒë©´ì„œ í…Œì´ë¸” íŒŒë¼ë¯¸í„°ì— ë°ì´í„° ì„¸íŒ…
 			for(Map<String, Object> eachMap : giftCardActvPtclList){
-				//MaeilDo Áı°è µ¥ÀÌÅÍ ±âÁØ ½Ã½ºÅÛ ±¸ºĞ ¼¼ÆÃ
+				// MaeilDo ì§‘ê³„ ë°ì´í„° ê¸°ì¤€ ì‹œìŠ¤í…œ êµ¬ë¶„ ì„¸íŒ…
 				
 				String zsysGubun = "5";
 				if("A".equals((String) eachMap.get("SETL_DV")) || "B".equals((String) eachMap.get("SETL_DV"))) zsysGubun="6";
-				// ÀÌº¥Æ® ÁõÁ¤¿ë ±âÇÁÆ®Ä«µå Ãß°¡ | 2018. 7. 6. | jhPark
+				// ì´ë²¤íŠ¸ ì¦ì •ìš© ê¸°í”„íŠ¸ì¹´ë“œ ì¶”ê°€ | 2018. 7. 6. | jhPark
 				if("D".equals((String) eachMap.get("SETL_DV")) || "E".equals((String) eachMap.get("SETL_DV"))) zsysGubun="7";
-				// 2018_106_±³¿øÁ¦ÈŞÄ«µå | 2018. 7. 18. | jhPark
+				// 2018_106_êµì›ì œíœ´ì¹´ë“œ | 2018. 7. 18. | jhPark
 				if("G".equals((String) eachMap.get("SETL_DV")) || "H".equals((String) eachMap.get("SETL_DV"))) zsysGubun="8";
 				
 				
@@ -833,44 +824,45 @@ public class EaseCommonUtil_SAP {
 				if("A".equals((String) eachMap.get("SETL_DV"))) zGubun = "1";
 				else if("B".equals((String) eachMap.get("SETL_DV"))) zGubun = "2";
 				
-				// ÀÌº¥Æ® ÁõÁ¤¿ë ±âÇÁÆ®Ä«µå Ãß°¡ | 2018. 7. 6. | jhPark
+				// ì´ë²¤íŠ¸ ì¦ì •ìš© ê¸°í”„íŠ¸ì¹´ë“œ ì¶”ê°€ | 2018. 7. 6. | jhPark
 				else if("D".equals((String) eachMap.get("SETL_DV"))) zGubun = "1";
 				else if("E".equals((String) eachMap.get("SETL_DV"))) zGubun = "2";
 				
-				// 2018_106_±³¿øÁ¦ÈŞÄ«µå | 2018. 7. 18. | jhPark
+				// 2018_106_êµì›ì œíœ´ì¹´ë“œ | 2018. 7. 18. | jhPark
 				else if("G".equals((String) eachMap.get("SETL_DV"))) zGubun = "1";
 				else if("H".equals((String) eachMap.get("SETL_DV"))) zGubun = "2";
 				else zGubun = (String) eachMap.get("SETL_DV");
 				
 				codes.appendRow();
 				
-				codes.setValue("BUKRS"			, "1000"							);	//¸ÅÀÏÀ¯¾÷ È¸»çÄÚµå '1000' À¸·Î °íÁ¤
-				codes.setValue("INT_BUKRS"		, eachMap.get("COOPCO_CD")			);	//MaeilDO ¿¡¼­ »ç¿ëÇÏ´Â È¸¿ø»çÄÚµå (7000 MaeilDO, 7030 ¿¥Áî¾¾µå µî)
-				codes.setValue("ZSYS_GUBUN"		, zsysGubun							);	//½Ã½ºÅÛ ±¸ºĞ,  1: ±âÁ¸ ¿¥Áî¾¾µåPOS , 5:ÅëÇÕ¸â¹ö½± ½Ã½ºÅÛ, 6:³»ºÎ°í°´ÅëÇÕ¸â¹ö½±, 7:ÀÌº¥Æ®ÁõÁ¤¿ë±âÇÁÆ®Ä«µå
-				codes.setValue("ZGUBUN"			, zGubun							);	//¾÷¹«±¸ºĞ, 1: Membership ÃæÀü, 2.  Membership Ãë¼Ò, 3:  Membership È¯ºÒ
-				codes.setValue("BLDAT"			, eachMap.get("SETL_DT")			);	//MaeilDO ÀÏ¸¶°¨ ÀÏÀÚ (ÅëÇÕ¸â¹ö½± ÀÏ¸¶°¨ ÀÏÀÚ)
-				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")				);	//¼ø¹ø,  ÇØ´çÀÏ °Å·¡ÀÇ ¼øÂ÷¹øÈ£
-//				codes.setValue("KUNNR"			, ""		);							//°Å·¡¹ß»ı ¿¥Áî¾¾µå ¸ÅÀåÄÚµå --> °ø¶õÀ¸·Î I/F ÇÔ 
-				codes.setValue("ZCASH_AMT"		, eachMap.get("CASH_ACTV_AMT_SUM")	);	//Çö±İ°áÀç±İ¾×, Çö±İ °Å·¡ ¹ß»ı ±İ¾×
-				codes.setValue("ZCARD_AMT"		, eachMap.get("CRD_ACTV_AMT_SUM")	);	//Ä«µå°áÀç±İ¾×, Ä«µå °Å·¡ ¹ß»ı ±İ¾×
-				codes.setValue("ZPAY_GUBUN"		, eachMap.get("MBLE_DV")			);	//¸ğ¹ÙÀÏ °Å·¡±¸ºĞÅ° (¸ğ¹ÙÀÏ °Å·¡ ±¸ºĞ Å° [10:LG U+, 20:PAYCO, 30:Çö±İ(ÇÁ·Î¸ğ¼Ç Ä«µå), 40:KGMob])
-				codes.setValue("ZWEB_AMT"		, eachMap.get("MBLE_AMT")			);	//WEB °áÀç±İ¾×, ¸ğ¹ÙÀÏ ±İ¾× (ÀÔ±İµÉ ±İ¾×)
-				codes.setValue("ZWEB_Q_AMT"		, eachMap.get("MBLE_CPN_AMT")		);	//WEB °áÀç±İ¾× (ÄíÆù ±İ¾×)
-				codes.setValue("ZWEB_P_AMT"		, eachMap.get("MBLE_PINT_AMT")		);	//WEB °áÀç±İ¾× (Æ÷ÀÎÆ® ±İ¾×)
-				codes.setValue("ZWEB_E_AMT"		, eachMap.get("MBLE_ETC_AMT")		);	//WEB °áÀç±İ¾× (±âÅ¸ ±İ¾×)
-//				codes.setValue("KOSTL"			, eachMap.get("")					);	//¸ÅÀåÄÚ½ºÆ®¼¾ÅÍ --> °ø¶õÀ¸·Î I/F ÇÔ
-//				codes.setValue("ZDC_CASH_AMT"	, eachMap.get("")					);	//ÇÒÀÎ ÆÇ¸ÅÀå·Á±İ (Çö±İ°Å·¡)
-//				codes.setValue("ZUP_CASH_AMT"	, eachMap.get("")					);	//ÇÒÁõ ÆÇ¸ÅÀå·Á±İ (Çö±İ°Å·¡)
-//				codes.setValue("ZDC_CARD_AMT"	, eachMap.get("")					);	//ÇÒÀÎ ÆÇ¸ÅÀå·Á±İ (Ä«µå°Å·¡)
-//				codes.setValue("ZUP_CARD_AMT"	, eachMap.get("")					);	//ÇÒÁõ ÆÇ¸ÅÀå·Á±İ (Ä«µå°Å·¡)
-//				codes.setValue("BANKL"			, eachMap.get("")					);	//ÀºÇàÄÚµå, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÇØ´ç (ÀºÇàÄÚµå 3ÀÚ¸®)
-//				codes.setValue("BANKN"			, eachMap.get("")					);	//°èÁÂ¹øÈ£, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÀÛ¼º (ÀºÇà °èÁ¤¹øÈ£)
-//				codes.setValue("KOINH"			, eachMap.get("")					);	//¿¹±İÁÖ¸í, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÀÛ¼º (°èÁ¤ º¸À¯ÀÚ¸í)
-//				codes.setValue("ZPERSONAL_NO"	, eachMap.get("")					);	//È¸¿ø¹øÈ£, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÀÛ¼º
-//				codes.setValue("ZCARD_NO"		, eachMap.get("")					);	//Ä«µå¹øÈ£, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÀÛ¼º
-				codes.setValue("IFDAT"			, trmsYmd							);			//Àü¼ÛÀÏÀÚ
-				codes.setValue("IFZET"			, trmsHms							);			//Àü¼Û½Ã°£
-				codes.setValue("IFNAM"			, "MAEILDO"							);		//Àü¼ÛÀÚ, Àü¼ÛID
+				codes.setValue("BUKRS"			, "1000"							);	//ë§¤ì¼ìœ ì—… íšŒì‚¬ì½”ë“œ '1000' ìœ¼ë¡œ ê³ ì •
+				codes.setValue("INT_BUKRS"		, eachMap.get("COOPCO_CD")			);	//MaeilDO ì—ì„œ ì‚¬ìš©í•˜ëŠ” íšŒì›ì‚¬ì½”ë“œ (7000 MaeilDO, 7030 ì— ì¦ˆì”¨ë“œ ë“±)
+				codes.setValue("ZSYS_GUBUN"		, zsysGubun							);	//ì‹œìŠ¤í…œ êµ¬ë¶„,  1: ê¸°ì¡´ ì— ì¦ˆì”¨ë“œPOS , 5:í†µí•©ë©¤ë²„ì‰½ ì‹œìŠ¤í…œ, 6:ë‚´ë¶€ê³ ê°í†µí•©ë©¤ë²„ì‰½, 7:ì´ë²¤íŠ¸ì¦ì •ìš©ê¸°í”„íŠ¸ì¹´ë“œ
+				codes.setValue("ZGUBUN"			, zGubun							);	//ì—…ë¬´êµ¬ë¶„, 1: Membership ì¶©ì „, 2.  Membership ì·¨ì†Œ, 3:  Membership í™˜ë¶ˆ
+				codes.setValue("BLDAT"			, eachMap.get("SETL_DT")			);	//MaeilDO ì¼ë§ˆê° ì¼ì (í†µí•©ë©¤ë²„ì‰½ ì¼ë§ˆê° ì¼ì)
+				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")				);	//ìˆœë²ˆ,  í•´ë‹¹ì¼ ê±°ë˜ì˜ ìˆœì°¨ë²ˆí˜¸
+//				codes.setValue("KUNNR"			, ""		);							//ê±°ë˜ë°œìƒ ì— ì¦ˆì”¨ë“œ ë§¤ì¥ì½”ë“œ --> ê³µë€ìœ¼ë¡œ I/F í•¨ 
+				codes.setValue("ZCASH_AMT"		, eachMap.get("CASH_ACTV_AMT_SUM")	);	//í˜„ê¸ˆê²°ì¬ê¸ˆì•¡, í˜„ê¸ˆ ê±°ë˜ ë°œìƒ ê¸ˆì•¡
+				codes.setValue("ZCARD_AMT"		, eachMap.get("CRD_ACTV_AMT_SUM")	);	//ì¹´ë“œê²°ì¬ê¸ˆì•¡, ì¹´ë“œ ê±°ë˜ ë°œìƒ ê¸ˆì•¡
+				codes.setValue("ZPAY_GUBUN"		, eachMap.get("MBLE_DV")			);	//ëª¨ë°”ì¼ ê±°ë˜êµ¬ë¶„í‚¤ (ëª¨ë°”ì¼ ê±°ë˜ êµ¬ë¶„ í‚¤ [10:LG U+, 20:PAYCO, 30:í˜„ê¸ˆ(í”„ë¡œëª¨ì…˜ ì¹´ë“œ), 40:KGMob])
+				codes.setValue("ZWEB_AMT"		, eachMap.get("MBLE_AMT")			);	//WEB ê²°ì¬ê¸ˆì•¡, ëª¨ë°”ì¼ ê¸ˆì•¡ (ì…ê¸ˆë  ê¸ˆì•¡)
+				codes.setValue("ZWEB_Q_AMT"		, eachMap.get("MBLE_CPN_AMT")		);	//WEB ê²°ì¬ê¸ˆì•¡ (ì¿ í° ê¸ˆì•¡)
+				codes.setValue("ZWEB_P_AMT"		, eachMap.get("MBLE_PINT_AMT")		);	//WEB ê²°ì¬ê¸ˆì•¡ (í¬ì¸íŠ¸ ê¸ˆì•¡)
+				codes.setValue("ZWEB_E_AMT"		, eachMap.get("MBLE_ETC_AMT")		);	//WEB ê²°ì¬ê¸ˆì•¡ (ê¸°íƒ€ ê¸ˆì•¡)
+//				codes.setValue("KOSTL"			, eachMap.get("")					);	//ë§¤ì¥ì½”ìŠ¤íŠ¸ì„¼í„° --> ê³µë€ìœ¼ë¡œ I/F í•¨
+//				codes.setValue("ZDC_CASH_AMT"	, eachMap.get("")					);	//í• ì¸ íŒë§¤ì¥ë ¤ê¸ˆ (í˜„ê¸ˆê±°ë˜)
+//				codes.setValue("ZUP_CASH_AMT"	, eachMap.get("")					);	//í• ì¦ íŒë§¤ì¥ë ¤ê¸ˆ (í˜„ê¸ˆê±°ë˜)
+//				codes.setValue("ZDC_CARD_AMT"	, eachMap.get("")					);	//í• ì¸ íŒë§¤ì¥ë ¤ê¸ˆ (ì¹´ë“œê±°ë˜)
+//				codes.setValue("ZUP_CARD_AMT"	, eachMap.get("")					);	//í• ì¦ íŒë§¤ì¥ë ¤ê¸ˆ (ì¹´ë“œê±°ë˜)
+//				codes.setValue("BANKL"			, eachMap.get("")					);	//ì€í–‰ì½”ë“œ, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ í•´ë‹¹ (ì€í–‰ì½”ë“œ 3ìë¦¬)
+//				codes.setValue("BANKN"			, eachMap.get("")					);	//ê³„ì¢Œë²ˆí˜¸, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ ì‘ì„± (ì€í–‰ ê³„ì •ë²ˆí˜¸)
+//				codes.setValue("KOINH"			, eachMap.get("")					);	//ì˜ˆê¸ˆì£¼ëª…, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ ì‘ì„± (ê³„ì • ë³´ìœ ìëª…)
+//				codes.setValue("ZPERSONAL_NO"	, eachMap.get("")					);	//íšŒì›ë²ˆí˜¸, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ ì‘ì„±
+//				codes.setValue("ZCARD_NO"		, eachMap.get("")					);	//ì¹´ë“œë²ˆí˜¸, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ ì‘ì„±
+				codes.setValue("IFDAT"			, trmsYmd							);			//ì „ì†¡ì¼ì
+				codes.setValue("IFZET"			, trmsHms							);			//ì „ì†¡ì‹œê°„
+				codes.setValue("IFNAM"			, "MAEILDO"							);		//ì „ì†¡ì, ì „ì†¡ID
+				
 			}
 		}
 		
@@ -879,7 +871,7 @@ public class EaseCommonUtil_SAP {
 */	
 	
 	/**
-	 * ±âÇÁÆ®Ä«µå ÃæÀü ¼Ò¸ê µ¥ÀÌÅÍ ¼ÂÆÃ
+	 * ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	 * @param JCoTable codes 
 	 * @param giftCardActvXtnctPtclList 
 	 * @param coopCoCd 
@@ -888,31 +880,31 @@ public class EaseCommonUtil_SAP {
 	/*
 	private JCoTable setActvXtnctPtclSapParam(JCoTable codes, List<Map<String, Object>> giftCardActvXtnctPtclList, String coopCoCd) {
 		
-		setCurDate();	//ÇöÀç½Ã°£ ¼ÂÆÃ
+		setCurDate();	//ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
-			//·çÇÁµ¹¸é¼­ Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ¿¡ µ¥ÀÌÅÍ ¼¼ÆÃ
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¼­ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			for(Map<String, Object> eachMap : giftCardActvXtnctPtclList){
 				codes.appendRow();
 				
 				String zsysGubun = "5";
 				if("C".equals((String) eachMap.get("SETL_DV"))) zsysGubun="6";
-				// ÀÌº¥Æ® ÁõÁ¤¿ë ±âÇÁÆ®Ä«µå Ãß°¡ | 2018. 7. 6. | jhPark
+				// ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ß°ï¿½ | 2018. 7. 6. | jhPark
 				else if("F".equals((String) eachMap.get("SETL_DV"))) zsysGubun="7";
-				// 2018_106_±³¿øÁ¦ÈŞÄ«µå | 2018. 7. 18. | jhPark
+				// 2018_106_ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½ | 2018. 7. 18. | jhPark
 				else if("I".equals((String) eachMap.get("SETL_DV"))) zsysGubun="8";
 				
-				codes.setValue("BUKRS"			, "1000"							);	//¸ÅÀÏÀ¯¾÷ È¸»çÄÚµå '1000' À¸·Î °íÁ¤
-				codes.setValue("INT_BUKRS"		, eachMap.get("COOPCO_CD")			);	//MaeilDO ¿¡¼­ »ç¿ëÇÏ´Â È¸¿ø»çÄÚµå (7000 MaeilDO, 7030 ¿¥Áî¾¾µå µî)
-				codes.setValue("ZSYS_GUBUN"		, zsysGubun							);	//½Ã½ºÅÛ ±¸ºĞ,  1: ±âÁ¸ ¿¥Áî¾¾µåPOS , 6:ÅëÇÕ¸â¹ö½± ½Ã½ºÅÛ( ÀÓÁ÷¿øº¹ÁöÄ«µå) , 7:ÀÌº¥Æ®ÁõÁ¤¿ë ±âÇÁÆ®Ä«µå
-				codes.setValue("BLDAT"			, eachMap.get("XTNCT_DT")			);	//MaeilDO ÀÏ¸¶°¨ ÀÏÀÚ (ÅëÇÕ¸â¹ö½± ÀÏ¸¶°¨ ÀÏÀÚ)
-				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")				);	//¼ø¹ø,  ÇØ´çÀÏ °Å·¡ÀÇ ¼øÂ÷¹øÈ£
-//				codes.setValue("KUNNR"			, ""		);							//°Å·¡¹ß»ı ¿¥Áî¾¾µå ¸ÅÀåÄÚµå --> °ø¶õÀ¸·Î I/F ÇÔ 
-				codes.setValue("ZEXTINCT_AMT"	, eachMap.get("XTNCT_AMT")			);	//ÃæÀü¼Ò¸ê±İ¾×
-//				codes.setValue("KOSTL"			, eachMap.get("")					);	//¸ÅÀåÄÚ½ºÆ®¼¾ÅÍ --> °ø¶õÀ¸·Î I/F ÇÔ
-				codes.setValue("IFDAT"			, trmsYmd							);	//Àü¼ÛÀÏÀÚ
-				codes.setValue("IFZET"			, trmsHms							);	//Àü¼Û½Ã°£
-				codes.setValue("IFNAM"			, "MAEILDO"							);	//Àü¼ÛÀÚ, Àü¼ÛID
+				codes.setValue("BUKRS"			, "1000"							);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½Úµï¿½ '1000' ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("INT_BUKRS"		, eachMap.get("COOPCO_CD")			);	//MaeilDO ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ (7000 MaeilDO, 7030 ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½ ï¿½ï¿½)
+				codes.setValue("ZSYS_GUBUN"		, zsysGubun							);	//ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½,  1: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½POS , 6:ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½( ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½) , 7:ï¿½Ìºï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½
+				codes.setValue("BLDAT"			, eachMap.get("XTNCT_DT")			);	//MaeilDO ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")				);	//ï¿½ï¿½ï¿½ï¿½,  ï¿½Ø´ï¿½ï¿½ï¿½ ï¿½Å·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È£
+//				codes.setValue("KUNNR"			, ""		);							//ï¿½Å·ï¿½ï¿½ß»ï¿½ ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ --> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ I/F ï¿½ï¿½ 
+				codes.setValue("ZEXTINCT_AMT"	, eachMap.get("XTNCT_AMT")			);	//ï¿½ï¿½ï¿½ï¿½ï¿½Ò¸ï¿½İ¾ï¿½
+//				codes.setValue("KOSTL"			, eachMap.get("")					);	//ï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ --> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ I/F ï¿½ï¿½
+				codes.setValue("IFDAT"			, trmsYmd							);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("IFZET"			, trmsHms							);	//ï¿½ï¿½ï¿½Û½Ã°ï¿½
+				codes.setValue("IFNAM"			, "MAEILDO"							);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ID
 			}
 		}
 		
@@ -921,7 +913,7 @@ public class EaseCommonUtil_SAP {
 */
 
 	/**
-	 * ±âÇÁÆ®Ä«µå »ç¿ë ³»¿ª µ¥ÀÌÅÍ ¼ÂÆÃ
+	 * ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	 * @param JCoTable codes 
 	 * @param giftCardActvPtclList 
 	 * @param coopCoCd 
@@ -930,25 +922,25 @@ public class EaseCommonUtil_SAP {
 	/*
 	private JCoTable setUsePtclSapParam(JCoTable codes, List<Map<String, Object>> giftCardUsePtclList, String coopCoCd) {
 		
-		setCurDate();	//ÇöÀç½Ã°£ ¼ÂÆÃ
+		setCurDate();	//ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½
 		
-		if("7010".equals(coopCoCd)){			//¸ÅÀÏÀ¯¾÷
-			//·çÇÁµ¹¸é¼­ Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ¿¡ µ¥ÀÌÅÍ ¼¼ÆÃ
+		if("7010".equals(coopCoCd)){			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¼­ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			for(Map<String, Object> eachMap : giftCardUsePtclList){
 				codes.appendRow();
 				
-				codes.setValue("BUKRS"			, "1000"							);	//¸ÅÀÏÀ¯¾÷ È¸»çÄÚµå '1000' À¸·Î °íÁ¤
-				codes.setValue("INT_BUKRS"		, eachMap.get("COOPCO_CD")			);	//MaeilDO ¿¡¼­ »ç¿ëÇÏ´Â È¸¿ø»çÄÚµå (7000 MaeilDO, 7030 ¿¥Áî¾¾µå µî)
-				codes.setValue("ZSYS_GUBUN"		, "5"								);	//½Ã½ºÅÛ ±¸ºĞ,  1: ±âÁ¸ ¿¥Áî¾¾µåPOS , 5:ÅëÇÕ¸â¹ö½± ½Ã½ºÅÛ
-				codes.setValue("ZGUBUN2"		, eachMap.get("SALE_DV")			);	//¾÷¹«±¸ºĞ, 1: Membership »ç¿ë, 2.  Membership »ç¿ëÃë¼Ò
-				codes.setValue("BLDAT"			, eachMap.get("USE_DT")				);	//MaeilDO ÀÏ¸¶°¨ ÀÏÀÚ (ÅëÇÕ¸â¹ö½± ÀÏ¸¶°¨ ÀÏÀÚ)
-				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")				);	//¼ø¹ø,  ÇØ´çÀÏ °Å·¡ÀÇ ¼øÂ÷¹øÈ£
-//				codes.setValue("KUNNR"			, ""		);							//°Å·¡¹ß»ı ¿¥Áî¾¾µå ¸ÅÀåÄÚµå --> °ø¶õÀ¸·Î I/F ÇÔ 
-				codes.setValue("ZUSING_AMT"		, eachMap.get("USE_AMT")			);	//»ç¿ë/Ãë¼Ò ±İ¾×
-//				codes.setValue("KOSTL"			, eachMap.get("")					);	//¸ÅÀåÄÚ½ºÆ®¼¾ÅÍ --> °ø¶õÀ¸·Î I/F ÇÔ
-				codes.setValue("IFDAT"			, trmsYmd							);	//Àü¼ÛÀÏÀÚ
-				codes.setValue("IFZET"			, trmsHms							);	//Àü¼Û½Ã°£
-				codes.setValue("IFNAM"			, "MAEILDO"							);	//Àü¼ÛÀÚ, Àü¼ÛID
+				codes.setValue("BUKRS"			, "1000"							);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½Úµï¿½ '1000' ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("INT_BUKRS"		, eachMap.get("COOPCO_CD")			);	//MaeilDO ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ (7000 MaeilDO, 7030 ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½ ï¿½ï¿½)
+				codes.setValue("ZSYS_GUBUN"		, "5"								);	//ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½,  1: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½POS , 5:ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½
+				codes.setValue("ZGUBUN2"		, eachMap.get("SALE_DV")			);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, 1: Membership ï¿½ï¿½ï¿½, 2.  Membership ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("BLDAT"			, eachMap.get("USE_DT")				);	//MaeilDO ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")				);	//ï¿½ï¿½ï¿½ï¿½,  ï¿½Ø´ï¿½ï¿½ï¿½ ï¿½Å·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È£
+//				codes.setValue("KUNNR"			, ""		);							//ï¿½Å·ï¿½ï¿½ß»ï¿½ ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ --> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ I/F ï¿½ï¿½ 
+				codes.setValue("ZUSING_AMT"		, eachMap.get("USE_AMT")			);	//ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ ï¿½İ¾ï¿½
+//				codes.setValue("KOSTL"			, eachMap.get("")					);	//ï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ --> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ I/F ï¿½ï¿½
+				codes.setValue("IFDAT"			, trmsYmd							);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("IFZET"			, trmsHms							);	//ï¿½ï¿½ï¿½Û½Ã°ï¿½
+				codes.setValue("IFNAM"			, "MAEILDO"							);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ID
 			}
 		}
 		
@@ -957,7 +949,7 @@ public class EaseCommonUtil_SAP {
 	*/
 	
 	/**
-	 * ±âÇÁÆ®Ä«µå È¯ºÒ ÁøÇàÁß µ¥ÀÌÅÍ ¼ÂÆÃ
+	 * ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	 * @param JCoTable codes 
 	 * @param giftCardRefdReqPtclList 
 	 * @param coopCoCd 
@@ -966,24 +958,24 @@ public class EaseCommonUtil_SAP {
 	/*
 	private JCoTable setRefdReqPtclRecvSapParam(JCoTable codes, List<Map<String, Object>> giftCardRefdReqPtclRecvList, String coopCoCd) {
 
-		setCurDate();	//ÇöÀç½Ã°£ ¼ÂÆÃ
+		setCurDate();	//ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½
 		
-		if("7010".equals(coopCoCd)){			//¸ÅÀÏÀ¯¾÷
-			//·çÇÁµ¹¸é¼­ Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ¿¡ µ¥ÀÌÅÍ ¼¼ÆÃ
+		if("7010".equals(coopCoCd)){			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¼­ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			for(Map<String, Object> eachMap : giftCardRefdReqPtclRecvList){
 				codes.appendRow();
 				
-				codes.setValue("BUKRS"			, "1000"							);	//¸ÅÀÏÀ¯¾÷ È¸»çÄÚµå '1000' À¸·Î °íÁ¤
-				codes.setValue("INT_BUKRS"		, "7000"							);	//MaeilDO ¿¡¼­ »ç¿ëÇÏ´Â È¸¿ø»çÄÚµå (7000 MaeilDO, 7030 ¿¥Áî¾¾µå µî) -> È¯ºÒ ½Ã MaeilDO »ç¿ë
-				codes.setValue("ZSYS_GUBUN"		, "5"								);	//½Ã½ºÅÛ ±¸ºĞ,  1: ±âÁ¸ ¿¥Áî¾¾µåPOS , 5:ÅëÇÕ¸â¹ö½± ½Ã½ºÅÛ
-				codes.setValue("ZGUBUN"			, "3"								);	//¾÷¹«±¸ºĞ, 1: Membership ÃæÀü, 2.  Membership Ãë¼Ò, 3:  Membership È¯ºÒ
-				codes.setValue("BLDAT"			, eachMap.get("REQ_DTM")			);	//È¯ºÒ¿äÃ»ÀÏ, MaeilDO ÀÏ¸¶°¨ ÀÏÀÚ (ÅëÇÕ¸â¹ö½± ÀÏ¸¶°¨ ÀÏÀÚ) -> È¯ºÒ ½Ã °í°´ È¯ºÒ¿äÃ»ÀÏÀ» 8ÀÚ¸®·Î º¯È¯ÇÏ¿© Àü¼Û
-				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")				);	//¼ø¹ø,  ÇØ´çÀÏ °Å·¡ÀÇ ¼øÂ÷¹øÈ£
-				codes.setValue("ZCARD_NO"		, eachMap.get("CRD_ID")				);	//Ä«µå¹øÈ£
-				codes.setValue("ZPERSONAL_NO"	, eachMap.get("UNFY_MMB_NO")		);	//ÅëÇÕÈ¸¿ø¹øÈ£
-				codes.setValue("IFDAT"			, trmsYmd							);	//Àü¼ÛÀÏÀÚ
-				codes.setValue("IFZET"			, trmsHms							);	//Àü¼Û½Ã°£
-				codes.setValue("IFNAM"			, "MAEILDO"							);	//Àü¼ÛÀÚ, Àü¼ÛID
+				codes.setValue("BUKRS"			, "1000"							);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½Úµï¿½ '1000' ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("INT_BUKRS"		, "7000"							);	//MaeilDO ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ (7000 MaeilDO, 7030 ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½ ï¿½ï¿½) -> È¯ï¿½ï¿½ ï¿½ï¿½ MaeilDO ï¿½ï¿½ï¿½
+				codes.setValue("ZSYS_GUBUN"		, "5"								);	//ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½,  1: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½POS , 5:ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½
+				codes.setValue("ZGUBUN"			, "3"								);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, 1: Membership ï¿½ï¿½ï¿½ï¿½, 2.  Membership ï¿½ï¿½ï¿½, 3:  Membership È¯ï¿½ï¿½
+				codes.setValue("BLDAT"			, eachMap.get("REQ_DTM")			);	//È¯ï¿½Ò¿ï¿½Ã»ï¿½ï¿½, MaeilDO ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) -> È¯ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ È¯ï¿½Ò¿ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ 8ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")				);	//ï¿½ï¿½ï¿½ï¿½,  ï¿½Ø´ï¿½ï¿½ï¿½ ï¿½Å·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È£
+				codes.setValue("ZCARD_NO"		, eachMap.get("CRD_ID")				);	//Ä«ï¿½ï¿½ï¿½È£
+				codes.setValue("ZPERSONAL_NO"	, eachMap.get("UNFY_MMB_NO")		);	//ï¿½ï¿½ï¿½ï¿½È¸ï¿½ï¿½ï¿½ï¿½È£
+				codes.setValue("IFDAT"			, trmsYmd							);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("IFZET"			, trmsHms							);	//ï¿½ï¿½ï¿½Û½Ã°ï¿½
+				codes.setValue("IFNAM"			, "MAEILDO"							);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ID
 			}
 		}
 		
@@ -993,44 +985,44 @@ public class EaseCommonUtil_SAP {
 	
 	
 	/** 
-	 * ±âÇÁÆ®Ä«µå È¯ºÒ Ã³¸® ³»¿ª(JCoTable)À» ¸®½ºÆ® ÇüÅÂ·Î º¯È¯ÇÏ¿© param¿¡ Ãß°¡
+	 * ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ È¯ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(JCoTable)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½È¯ï¿½Ï¿ï¿½ paramï¿½ï¿½ ï¿½ß°ï¿½
 	 * @param param
 	 * @param JCoTable codes	
 	 * @return param
 	 */
 	/*
 	private Map<String, Object> setReturnList(Map<String, Object> param, JCoTable codes) {		
-		List<Map<String, Object>> returnListTempHist = new ArrayList<Map<String, Object>>();	//È¯ºÒ Ã³¸® °á°ú¸¦ ´ãÀ» ÀÌ·Â¿ë ¸®½ºÆ® 
-		List<Map<String, Object>> returnListTempSuccess = new ArrayList<Map<String, Object>>();	//È¯ºÒ ¼º°ø °á°ú¸¦ ´ãÀ» ÀÌ·Â¿ë ÀÓ½Ã ¸®½ºÆ´
-		List<Map<String, Object>> returnListTempFailuer = new ArrayList<Map<String, Object>>();	//È¯ºÒ ½ÇÆĞ °á°ú¸¦ ´ãÀ» ÀÌ·Â¿ë ÀÓ½Ã ¸®½ºÆ® 
+		List<Map<String, Object>> returnListTempHist = new ArrayList<Map<String, Object>>();	//È¯ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® 
+		List<Map<String, Object>> returnListTempSuccess = new ArrayList<Map<String, Object>>();	//È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·Â¿ï¿½ ï¿½Ó½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ´
+		List<Map<String, Object>> returnListTempFailuer = new ArrayList<Map<String, Object>>();	//È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·Â¿ï¿½ ï¿½Ó½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® 
 		
-		//sap¿¡¼­ ¼ö½ÅÇÑ µ¥ÀÌÅÍ¸¦ ¸®½ºÆ® ÇüÅÂ·Î º¯È¯
+		//sapï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½È¯
 		for(int i=0 ; i<codes.getNumRows() ; i++){
 			Map<String, Object> eachRowData = new HashMap<String, Object>();
 			codes.setRow(i);
 			
-			eachRowData.put("REQ_DTM",			(codes.getString("BLDAT")).replaceAll("-", ""));		//È¯ºÒ¿äÃ»ÀÏ
-			eachRowData.put("IDX", 				codes.getString("ZSERIAL_NO"));		//¼ø¹ø,  ÇØ´çÀÏ °Å·¡ÀÇ ¼øÂ÷¹øÈ£
-			eachRowData.put("CRD_ID",			codes.getString("ZCARD_NO"));		//Ä«µå¹øÈ£
-			eachRowData.put("UNFY_MMB_NO",		codes.getString("ZPERSONAL_NO"));	//ÅëÇÕÈ¸¿ø¹øÈ£
-			eachRowData.put("NM_INQ_SCSS_YN",	codes.getString("ZFLAG1"));			//¼º¸íÁ¶È¸ pos Àü¼Û¿©ºÎ, Y:¼º°ø, N:½ÇÆĞ, NULL:ÁøÇàÁß
-			eachRowData.put("REFD_SCSS_YN",		codes.getString("ZFLAG2"));			//´ë±İÁö±Ş pos Àü¼Û¿©ºÎ, Y:¼º°ø, NULL:ÁøÇàÁß
-			eachRowData.put("MSG_TYP",			codes.getString("MSGTY"));			//¸Ş½ÃÁö À¯Çü(S:¼º°ø, E:¿¡·¯), Á¶È¸¿äÃ»ÇÑ µ¥ÀÌÅÍ°¡ sapÃø¿¡ ¾ø´Â °æ¿ì E·Î ¸®ÅÏµÊ
-			eachRowData.put("MSG_CTT",			codes.getString("MSGTX"));			//¸Ş½ÃÁö ÅØ½ºÆ®
-			eachRowData.put("STATS",			codes.getString("STATS"));			//¼º¸íÁ¶È¸°á°úÄÚµå
-			eachRowData.put("TEXT",				codes.getString("TEXT"));			//¼º¸íÁ¶È¸¿À·ù»çÀ¯
+			eachRowData.put("REQ_DTM",			(codes.getString("BLDAT")).replaceAll("-", ""));		//È¯ï¿½Ò¿ï¿½Ã»ï¿½ï¿½
+			eachRowData.put("IDX", 				codes.getString("ZSERIAL_NO"));		//ï¿½ï¿½ï¿½ï¿½,  ï¿½Ø´ï¿½ï¿½ï¿½ ï¿½Å·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È£
+			eachRowData.put("CRD_ID",			codes.getString("ZCARD_NO"));		//Ä«ï¿½ï¿½ï¿½È£
+			eachRowData.put("UNFY_MMB_NO",		codes.getString("ZPERSONAL_NO"));	//ï¿½ï¿½ï¿½ï¿½È¸ï¿½ï¿½ï¿½ï¿½È£
+			eachRowData.put("NM_INQ_SCSS_YN",	codes.getString("ZFLAG1"));			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¸ pos ï¿½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½, Y:ï¿½ï¿½ï¿½ï¿½, N:ï¿½ï¿½ï¿½ï¿½, NULL:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			eachRowData.put("REFD_SCSS_YN",		codes.getString("ZFLAG2"));			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ pos ï¿½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½, Y:ï¿½ï¿½ï¿½ï¿½, NULL:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			eachRowData.put("MSG_TYP",			codes.getString("MSGTY"));			//ï¿½Ş½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(S:ï¿½ï¿½ï¿½ï¿½, E:ï¿½ï¿½ï¿½ï¿½), ï¿½ï¿½È¸ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ sapï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Eï¿½ï¿½ ï¿½ï¿½ï¿½Ïµï¿½
+			eachRowData.put("MSG_CTT",			codes.getString("MSGTX"));			//ï¿½Ş½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ®
+			eachRowData.put("STATS",			codes.getString("STATS"));			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¸ï¿½ï¿½ï¿½ï¿½Úµï¿½
+			eachRowData.put("TEXT",				codes.getString("TEXT"));			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			
 			returnListTempHist.add(eachRowData);
 			
-			//¼º¸íÁ¶È¸ ¹× ´ë±İÁö±ŞÀÌ ¿Ï·áµÈ °æ¿ì(È¯ºÒ¼º°ø)¿¡¸¸ Ä«µå¸¶½ºÅÍ¿¡ ¾÷µ¥ÀÌÆ®
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¸ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ï¿½ ï¿½ï¿½ï¿½(È¯ï¿½Ò¼ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½å¸¶ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 			if("Y".equals(codes.getString("ZFLAG1")) && "Y".equals(codes.getString("ZFLAG2"))){
 				returnListTempSuccess.add(eachRowData);				
-			//È¯ºÒ½ÇÆĞ ½Ã ÈÄÃ³¸®¸¦ À§ÇÚ ¸®½ºÆ®  
-			}else if("E".equals(codes.getString("MSGTY"))){		//Á¶È¸¿äÃ»ÇÑ µ¥ÀÌÅÍ°¡ sapÃø¿¡ ¾ø´Â °æ¿ì
+			//È¯ï¿½Ò½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®  
+			}else if("E".equals(codes.getString("MSGTY"))){		//ï¿½ï¿½È¸ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ sapï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 				eachRowData.put("REFD_RTN_CD", "99");
 				eachRowData.put("REFD_RTN_MSG", "no data at sap system.");
 				returnListTempFailuer.add(eachRowData);
-			}else if("N".equals(codes.getString("ZFLAG1"))){	//¼º¸íÁ¶È¸¿¡ ½ÇÆĞÇÑ °æ¿ì
+			}else if("N".equals(codes.getString("ZFLAG1"))){	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 				eachRowData.put("REFD_RTN_CD", "01");
 //				eachRowData.put("REFD_RTN_MSG", "user info(account) search failure in sap");
 				eachRowData.put("REFD_RTN_MSG", codes.getString("TEXT"));
@@ -1048,7 +1040,7 @@ public class EaseCommonUtil_SAP {
 	*/
 	
 	/**
-	 * ±âÇÁÆ®Ä«µå È¯ºÒ½ÅÃ»³»¿ª µ¥ÀÌÅÍ ¼ÂÆÃ
+	 * ê¸°í”„íŠ¸ì¹´ë“œ í™˜ë¶ˆì‹ ì²­ë‚´ì—­ ë°ì´í„° ì…‹íŒ…
 	 * @param JCoTable codes 
 	 * @param giftCardRefdReqPtclList 
 	 * @param coopCoCd 
@@ -1057,13 +1049,13 @@ public class EaseCommonUtil_SAP {
 	/*
 	private JCoTable setRefdReqPtclSapParam(JCoTable codes, List<Map<String, Object>> giftCardRefdReqPtclList, String coopCoCd) {
 		
-		setCurDate();	//ÇöÀç½Ã°£ ¼ÂÆÃ
+		setCurDate();	//í˜„ì¬ì‹œê°„ ì…‹íŒ…
 		
-		if("7010".equals(coopCoCd)){			//¸ÅÀÏÀ¯¾÷
-			//·çÇÁµ¹¸é¼­ Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ¿¡ µ¥ÀÌÅÍ ¼¼ÆÃ
+		if("7010".equals(coopCoCd)){			//ë§¤ì¼ìœ ì—…
+			//ë£¨í”„ëŒë©´ì„œ í…Œì´ë¸” íŒŒë¼ë¯¸í„°ì— ë°ì´í„° ì„¸íŒ…
 			for(Map<String, Object> eachMap : giftCardRefdReqPtclList){
 				
-				logger.info("=========================±âÇÁÆ®Ä«µå È¯ºÒ ½ÅÃ» ³»¿ª µ¥ÀÌÅÍ ¼ÂÆÃ Á¤º¸ [s]===============================");
+				logger.info("=========================ê¸°í”„íŠ¸ì¹´ë“œ í™˜ë¶ˆ ì‹ ì²­ ë‚´ì—­ ë°ì´í„° ì…‹íŒ… ì •ë³´ [s]===============================");
 				logger.info("BLDAT  : " + eachMap.get("REQ_DT")	);
 				logger.info("ZSERIAL_NO  : " + eachMap.get("IDX")	);
 				logger.info("ZCASH_AMT  : " + eachMap.get("CASH_ACTV_AMT_SUM")	);
@@ -1076,37 +1068,37 @@ public class EaseCommonUtil_SAP {
 				logger.info("ZCARD_NO  : " + eachMap.get("CRD_ID")	);
 				logger.info("IFDAT  : " + trmsYmd);
 				logger.info("IFZET  : " + trmsHms);
-				logger.info("=========================±âÇÁÆ®Ä«µå È¯ºÒ ½ÅÃ» ³»¿ª µ¥ÀÌÅÍ ¼ÂÆÃ Á¤º¸ [e]===============================");
+				logger.info("=========================ê¸°í”„íŠ¸ì¹´ë“œ í™˜ë¶ˆ ì‹ ì²­ ë‚´ì—­ ë°ì´í„° ì…‹íŒ… ì •ë³´ [e]===============================");
 				
 				codes.appendRow();
 				
-				codes.setValue("BUKRS"			, "1000"							);	//¸ÅÀÏÀ¯¾÷ È¸»çÄÚµå '1000' À¸·Î °íÁ¤
-				codes.setValue("INT_BUKRS"		, "7000"							);	//MaeilDO ¿¡¼­ »ç¿ëÇÏ´Â È¸¿ø»çÄÚµå (7000 MaeilDO, 7030 ¿¥Áî¾¾µå µî) -> È¯ºÒ ½Ã MaeilDO »ç¿ë
-				codes.setValue("ZSYS_GUBUN"		, "5"								);	//½Ã½ºÅÛ ±¸ºĞ,  1: ±âÁ¸ ¿¥Áî¾¾µåPOS , 5:ÅëÇÕ¸â¹ö½± ½Ã½ºÅÛ
-				codes.setValue("ZGUBUN"			, "3"								);	//¾÷¹«±¸ºĞ, 1: Membership ÃæÀü, 2.  Membership Ãë¼Ò, 3:  Membership È¯ºÒ
-				codes.setValue("BLDAT"			, eachMap.get("REQ_DT")				);	//È¯ºÒ¿äÃ»ÀÏ, MaeilDO ÀÏ¸¶°¨ ÀÏÀÚ (ÅëÇÕ¸â¹ö½± ÀÏ¸¶°¨ ÀÏÀÚ) -> È¯ºÒ ½Ã °í°´ È¯ºÒ¿äÃ»ÀÏÀ» 8ÀÚ¸®·Î º¯È¯ÇÏ¿© Àü¼Û
-				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")				);	//¼ø¹ø,  ÇØ´çÀÏ °Å·¡ÀÇ ¼øÂ÷¹øÈ£
-//				codes.setValue("KUNNR"			, ""		);							//°Å·¡¹ß»ı ¿¥Áî¾¾µå ¸ÅÀåÄÚµå --> °ø¶õÀ¸·Î I/F ÇÔ 
-				codes.setValue("ZCASH_AMT"		, eachMap.get("CASH_ACTV_AMT_SUM")	);	//Çö±İ°áÀç±İ¾×, Çö±İ °Å·¡ ¹ß»ı ±İ¾×
-				codes.setValue("ZCARD_AMT"		, eachMap.get("CRD_ACTV_AMT_SUM")	);	//Ä«µå°áÀç±İ¾×, Ä«µå °Å·¡ ¹ß»ı ±İ¾×
-//				codes.setValue("ZPAY_GUBUN"		, eachMap.get("MBLE_DV")			);	//¸ğ¹ÙÀÏ °Å·¡±¸ºĞÅ° (10 : LG U+,  20 : PAYCO)
-				codes.setValue("ZWEB_AMT"		, eachMap.get("REFD_AMT_POSI")		);	//WEB °áÀç±İ¾×, ¸ğ¹ÙÀÏ ±İ¾× (ÀÔ±İµÉ ±İ¾×) -> È¯ºÒ ½Ã È¯ºÒ±İ¾×À¸·Î »ç¿ë
-//				codes.setValue("ZWEB_Q_AMT"		, eachMap.get("MBLE_CPN_AMT")		);	//WEB °áÀç±İ¾× (ÄíÆù ±İ¾×)
-//				codes.setValue("ZWEB_P_AMT"		, eachMap.get("MBLE_PINT_AMT")		);	//WEB °áÀç±İ¾× (Æ÷ÀÎÆ® ±İ¾×)
-//				codes.setValue("ZWEB_E_AMT"		, eachMap.get("MBLE_ETC_AMT")		);	//WEB °áÀç±İ¾× (±âÅ¸ ±İ¾×)
-//				codes.setValue("KOSTL"			, eachMap.get("")					);	//¸ÅÀåÄÚ½ºÆ®¼¾ÅÍ --> °ø¶õÀ¸·Î I/F ÇÔ
-//				codes.setValue("ZDC_CASH_AMT"	, eachMap.get("")					);	//ÇÒÀÎ ÆÇ¸ÅÀå·Á±İ (Çö±İ°Å·¡)
-//				codes.setValue("ZUP_CASH_AMT"	, eachMap.get("")					);	//ÇÒÁõ ÆÇ¸ÅÀå·Á±İ (Çö±İ°Å·¡)
-//				codes.setValue("ZDC_CARD_AMT"	, eachMap.get("")					);	//ÇÒÀÎ ÆÇ¸ÅÀå·Á±İ (Ä«µå°Å·¡)
-//				codes.setValue("ZUP_CARD_AMT"	, eachMap.get("")					);	//ÇÒÁõ ÆÇ¸ÅÀå·Á±İ (Ä«µå°Å·¡)
-				codes.setValue("BANKL"			, eachMap.get("BNK_CD")				);	//ÀºÇàÄÚµå, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÇØ´ç (ÀºÇàÄÚµå 3ÀÚ¸®)
-				codes.setValue("BANKN"			, eachMap.get("ACCT_NO")			);	//°èÁÂ¹øÈ£, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÀÛ¼º (ÀºÇà °èÁ¤¹øÈ£)
-				codes.setValue("KOINH"			, eachMap.get("OWAC_NM")			);	//¿¹±İÁÖ¸í, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÀÛ¼º (°èÁ¤ º¸À¯ÀÚ¸í)
-				codes.setValue("ZPERSONAL_NO"	, eachMap.get("UNFY_MMB_NO")		);	//È¸¿ø¹øÈ£, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÀÛ¼º (ÅëÇÕÈ¸¿ø¹øÈ£)
-				codes.setValue("ZCARD_NO"		, eachMap.get("CRD_ID")				);	//Ä«µå¹øÈ£, È¯ºÒÀÇ °æ¿ì¿¡¸¸ ÀÛ¼º
-				codes.setValue("IFDAT"			, trmsYmd							);			//Àü¼ÛÀÏÀÚ
-				codes.setValue("IFZET"			, trmsHms							);			//Àü¼Û½Ã°£
-				codes.setValue("IFNAM"			, "MAEILDO"							);		//Àü¼ÛÀÚ, Àü¼ÛID
+				codes.setValue("BUKRS"			, "1000"							);	//ë§¤ì¼ìœ ì—… íšŒì‚¬ì½”ë“œ '1000' ìœ¼ë¡œ ê³ ì •
+				codes.setValue("INT_BUKRS"		, "7000"							);	//MaeilDO ì—ì„œ ì‚¬ìš©í•˜ëŠ” íšŒì›ì‚¬ì½”ë“œ (7000 MaeilDO, 7030 ì— ì¦ˆì”¨ë“œ ë“±) -> í™˜ë¶ˆ ì‹œ MaeilDO ì‚¬ìš©
+				codes.setValue("ZSYS_GUBUN"		, "5"								);	//ì‹œìŠ¤í…œ êµ¬ë¶„,  1: ê¸°ì¡´ ì— ì¦ˆì”¨ë“œPOS , 5:í†µí•©ë©¤ë²„ì‰½ ì‹œìŠ¤í…œ
+				codes.setValue("ZGUBUN"			, "3"								);	//ì—…ë¬´êµ¬ë¶„, 1: Membership ì¶©ì „, 2.  Membership ì·¨ì†Œ, 3:  Membership í™˜ë¶ˆ
+				codes.setValue("BLDAT"			, eachMap.get("REQ_DT")				);	//í™˜ë¶ˆìš”ì²­ì¼, MaeilDO ì¼ë§ˆê° ì¼ì (í†µí•©ë©¤ë²„ì‰½ ì¼ë§ˆê° ì¼ì) -> í™˜ë¶ˆ ì‹œ ê³ ê° í™˜ë¶ˆìš”ì²­ì¼ì„ 8ìë¦¬ë¡œ ë³€í™˜í•˜ì—¬ ì „ì†¡
+				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")				);	//ìˆœë²ˆ,  í•´ë‹¹ì¼ ê±°ë˜ì˜ ìˆœì°¨ë²ˆí˜¸
+//				codes.setValue("KUNNR"			, ""		);							//ê±°ë˜ë°œìƒ ì— ì¦ˆì”¨ë“œ ë§¤ì¥ì½”ë“œ --> ê³µë€ìœ¼ë¡œ I/F í•¨ 
+				codes.setValue("ZCASH_AMT"		, eachMap.get("CASH_ACTV_AMT_SUM")	);	//í˜„ê¸ˆê²°ì¬ê¸ˆì•¡, í˜„ê¸ˆ ê±°ë˜ ë°œìƒ ê¸ˆì•¡
+				codes.setValue("ZCARD_AMT"		, eachMap.get("CRD_ACTV_AMT_SUM")	);	//ì¹´ë“œê²°ì¬ê¸ˆì•¡, ì¹´ë“œ ê±°ë˜ ë°œìƒ ê¸ˆì•¡
+//				codes.setValue("ZPAY_GUBUN"		, eachMap.get("MBLE_DV")			);	//ëª¨ë°”ì¼ ê±°ë˜êµ¬ë¶„í‚¤ (10 : LG U+,  20 : PAYCO)
+				codes.setValue("ZWEB_AMT"		, eachMap.get("REFD_AMT_POSI")		);	//WEB ê²°ì¬ê¸ˆì•¡, ëª¨ë°”ì¼ ê¸ˆì•¡ (ì…ê¸ˆë  ê¸ˆì•¡) -> í™˜ë¶ˆ ì‹œ í™˜ë¶ˆê¸ˆì•¡ìœ¼ë¡œ ì‚¬ìš©
+//				codes.setValue("ZWEB_Q_AMT"		, eachMap.get("MBLE_CPN_AMT")		);	//WEB ê²°ì¬ê¸ˆì•¡ (ì¿ í° ê¸ˆì•¡)
+//				codes.setValue("ZWEB_P_AMT"		, eachMap.get("MBLE_PINT_AMT")		);	//WEB ê²°ì¬ê¸ˆì•¡ (í¬ì¸íŠ¸ ê¸ˆì•¡)
+//				codes.setValue("ZWEB_E_AMT"		, eachMap.get("MBLE_ETC_AMT")		);	//WEB ê²°ì¬ê¸ˆì•¡ (ê¸°íƒ€ ê¸ˆì•¡)
+//				codes.setValue("KOSTL"			, eachMap.get("")					);	//ë§¤ì¥ì½”ìŠ¤íŠ¸ì„¼í„° --> ê³µë€ìœ¼ë¡œ I/F í•¨
+//				codes.setValue("ZDC_CASH_AMT"	, eachMap.get("")					);	//í• ì¸ íŒë§¤ì¥ë ¤ê¸ˆ (í˜„ê¸ˆê±°ë˜)
+//				codes.setValue("ZUP_CASH_AMT"	, eachMap.get("")					);	//í• ì¦ íŒë§¤ì¥ë ¤ê¸ˆ (í˜„ê¸ˆê±°ë˜)
+//				codes.setValue("ZDC_CARD_AMT"	, eachMap.get("")					);	//í• ì¸ íŒë§¤ì¥ë ¤ê¸ˆ (ì¹´ë“œê±°ë˜)
+//				codes.setValue("ZUP_CARD_AMT"	, eachMap.get("")					);	//í• ì¦ íŒë§¤ì¥ë ¤ê¸ˆ (ì¹´ë“œê±°ë˜)
+				codes.setValue("BANKL"			, eachMap.get("BNK_CD")				);	//ì€í–‰ì½”ë“œ, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ í•´ë‹¹ (ì€í–‰ì½”ë“œ 3ìë¦¬)
+				codes.setValue("BANKN"			, eachMap.get("ACCT_NO")			);	//ê³„ì¢Œë²ˆí˜¸, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ ì‘ì„± (ì€í–‰ ê³„ì •ë²ˆí˜¸)
+				codes.setValue("KOINH"			, eachMap.get("OWAC_NM")			);	//ì˜ˆê¸ˆì£¼ëª…, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ ì‘ì„± (ê³„ì • ë³´ìœ ìëª…)
+				codes.setValue("ZPERSONAL_NO"	, eachMap.get("UNFY_MMB_NO")		);	//íšŒì›ë²ˆí˜¸, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ ì‘ì„± (í†µí•©íšŒì›ë²ˆí˜¸)
+				codes.setValue("ZCARD_NO"		, eachMap.get("CRD_ID")				);	//ì¹´ë“œë²ˆí˜¸, í™˜ë¶ˆì˜ ê²½ìš°ì—ë§Œ ì‘ì„±
+				codes.setValue("IFDAT"			, trmsYmd							);			//ì „ì†¡ì¼ì
+				codes.setValue("IFZET"			, trmsHms							);			//ì „ì†¡ì‹œê°„
+				codes.setValue("IFNAM"			, "MAEILDO"							);		//ì „ì†¡ì, ì „ì†¡ID
 			}
 		}
 		
@@ -1115,7 +1107,7 @@ public class EaseCommonUtil_SAP {
 	*/
 	
 	/**
-	 * ±âÇÁÆ®Ä«µå ÀÎÁö¼¼ µ¥ÀÌÅÍ ¼ÂÆÃ
+	 * ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	 * @param JCoTable codes 
 	 * @param giftCardActvPtclList 
 	 * @param coopCoCd 
@@ -1124,40 +1116,40 @@ public class EaseCommonUtil_SAP {
 	/*
 	private JCoTable setStmpTaxSapParam(JCoTable codes, List<Map<String, Object>> giftCardStmpTaxList,	String coopCoCd) {
 		
-		setCurDate();	//ÇöÀç½Ã°£ ¼ÂÆÃ
+		setCurDate();	//ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½
 		
-		if("7010".equals(coopCoCd)){			//¸ÅÀÏÀ¯¾÷
-			//·çÇÁµ¹¸é¼­ Å×ÀÌºí ÆÄ¶ó¹ÌÅÍ¿¡ µ¥ÀÌÅÍ ¼¼ÆÃ
+		if("7010".equals(coopCoCd)){			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¼­ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			for(Map<String, Object> eachMap : giftCardStmpTaxList){
-				// MaeilDo Áı°è µ¥ÀÌÅÍ ±âÁØ ½Ã½ºÅÛ ±¸ºĞ ¼¼ÆÃ
+				// MaeilDo ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				String zsysGubun = "";
 				if("1".equals((String) eachMap.get("SETL_DV")) || "2".equals((String) eachMap.get("SETL_DV"))) zsysGubun="5";
 				else if("A".equals((String) eachMap.get("SETL_DV")) || "B".equals((String) eachMap.get("SETL_DV"))) zsysGubun="6";
-				// ÀÌº¥Æ® ÁõÁ¤¿ë ±âÇÁÆ® Ä«µå Ãß°¡ | 2018. 7. 6. | jhPark
+				// ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® Ä«ï¿½ï¿½ ï¿½ß°ï¿½ | 2018. 7. 6. | jhPark
 				else if("D".equals((String) eachMap.get("SETL_DV")) || "E".equals((String) eachMap.get("SETL_DV"))) zsysGubun="7";
-				// 2018_106_±³¿øÁ¦ÈŞÄ«µå: | 2018. 7. 18. | jhPark
+				// 2018_106_ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½: | 2018. 7. 18. | jhPark
 				else if("G".equals((String) eachMap.get("SETL_DV")) || "H".equals((String) eachMap.get("SETL_DV"))) zsysGubun="8";
 				
 				codes.appendRow();
 				
-				codes.setValue("BUKRS"			, "1000"						);	//¸ÅÀÏÀ¯¾÷ È¸»çÄÚµå '1000' À¸·Î °íÁ¤
-				codes.setValue("INT_BUKRS"		, eachMap.get("COOPCO_CD")		);	//MaeilDO ¿¡¼­ »ç¿ëÇÏ´Â È¸¿ø»çÄÚµå (7000 MaeilDO, 7030 ¿¥Áî¾¾µå µî)
-				codes.setValue("ZSYS_GUBUN"		, zsysGubun						);	//½Ã½ºÅÛ ±¸ºĞ,  1: ±âÁ¸ ¿¥Áî¾¾µåPOS , 5:ÅëÇÕ¸â¹ö½± ½Ã½ºÅÛ, 6:³»ºÎ°í°´ÅëÇÕ¸â¹ö½±
-				codes.setValue("ZSTAMP_GUBUN"	, eachMap.get("TYP_DV")			);	//¾÷¹«±¸ºĞ, 1: ÀÎÁö¼¼ ¹ß»ı, 2: ÀÎÁö¼¼ Ãë¼Ò
-				codes.setValue("BLDAT"			, eachMap.get("SETL_DT")		);	//MaeilDO ÀÏ¸¶°¨ ÀÏÀÚ (ÅëÇÕ¸â¹ö½± ÀÏ¸¶°¨ ÀÏÀÚ)
-				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")			);	//¼ø¹ø,  ÇØ´çÀÏ °Å·¡ÀÇ ¼øÂ÷¹øÈ£
-//				codes.setValue("KUNNR"			, ""							);	//°Å·¡¹ß»ı ¿¥Áî¾¾µå ¸ÅÀåÄÚµå --> °ø¶õÀ¸·Î I/F ÇÔ
-				codes.setValue("ZSTAMP_QTY1"	, eachMap.get("STMP_TAX_QNT_1")	);	//1¸¸¿ø±Ç ¼ö·®
-				codes.setValue("ZSTAMP_AMT1"	, eachMap.get("STMP_TAX_AMT_1")	);	//1¸¸¿ø±Ç ±İ¾×, ¼ö·® * 50
-				codes.setValue("ZSTAMP_QTY2"	, eachMap.get("STMP_TAX_QNT_2")	);	//5¸¸¿ø±Ç ¼ö·®
-				codes.setValue("ZSTAMP_AMT2"	, eachMap.get("STMP_TAX_AMT_2")	);	//5¸¸¿ø±Ç ±İ¾×, ¼ö·® * 200
-				codes.setValue("ZSTAMP_QTY3"	, eachMap.get("STMP_TAX_QNT_3")	);	//10¸¸¿ø±Ç ¼ö·®
-				codes.setValue("ZSTAMP_AMT3"	, eachMap.get("STMP_TAX_AMT_3")	);	//10¸¸¿ø±Ç ±İ¾×, ¼ö·® * 400
-				codes.setValue("ZSTAMP_QTY4"	, eachMap.get("STMP_TAX_QNT_4")	);	//10¸¸¿øÃÊ°ú±Ç ¼ö·®
-				codes.setValue("ZSTAMP_AMT4"	, eachMap.get("STMP_TAX_AMT_4")	);	//10¸¸¿øÃÊ°ú±Ç ±İ¾×, ¼ö·® * 800
-				codes.setValue("IFDAT"			, trmsYmd						);	//Àü¼ÛÀÏÀÚ
-				codes.setValue("IFZET"			, trmsHms						);	//Àü¼Û½Ã°£
-				codes.setValue("IFNAM"			, "MAEILDO"						);	//Àü¼ÛÀÚ, Àü¼ÛID
+				codes.setValue("BUKRS"			, "1000"						);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½Úµï¿½ '1000' ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("INT_BUKRS"		, eachMap.get("COOPCO_CD")		);	//MaeilDO ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ (7000 MaeilDO, 7030 ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½ ï¿½ï¿½)
+				codes.setValue("ZSYS_GUBUN"		, zsysGubun						);	//ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½,  1: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½POS , 5:ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½, 6:ï¿½ï¿½ï¿½Î°ï¿½ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("ZSTAMP_GUBUN"	, eachMap.get("TYP_DV")			);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, 1: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½, 2: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+				codes.setValue("BLDAT"			, eachMap.get("SETL_DT")		);	//MaeilDO ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+				codes.setValue("ZSERIAL_NO"		, eachMap.get("IDX")			);	//ï¿½ï¿½ï¿½ï¿½,  ï¿½Ø´ï¿½ï¿½ï¿½ ï¿½Å·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È£
+//				codes.setValue("KUNNR"			, ""							);	//ï¿½Å·ï¿½ï¿½ß»ï¿½ ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ --> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ I/F ï¿½ï¿½
+				codes.setValue("ZSTAMP_QTY1"	, eachMap.get("STMP_TAX_QNT_1")	);	//1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("ZSTAMP_AMT1"	, eachMap.get("STMP_TAX_AMT_1")	);	//1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½İ¾ï¿½, ï¿½ï¿½ï¿½ï¿½ * 50
+				codes.setValue("ZSTAMP_QTY2"	, eachMap.get("STMP_TAX_QNT_2")	);	//5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("ZSTAMP_AMT2"	, eachMap.get("STMP_TAX_AMT_2")	);	//5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½İ¾ï¿½, ï¿½ï¿½ï¿½ï¿½ * 200
+				codes.setValue("ZSTAMP_QTY3"	, eachMap.get("STMP_TAX_QNT_3")	);	//10ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("ZSTAMP_AMT3"	, eachMap.get("STMP_TAX_AMT_3")	);	//10ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½İ¾ï¿½, ï¿½ï¿½ï¿½ï¿½ * 400
+				codes.setValue("ZSTAMP_QTY4"	, eachMap.get("STMP_TAX_QNT_4")	);	//10ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("ZSTAMP_AMT4"	, eachMap.get("STMP_TAX_AMT_4")	);	//10ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ï¿½ï¿½ ï¿½İ¾ï¿½, ï¿½ï¿½ï¿½ï¿½ * 800
+				codes.setValue("IFDAT"			, trmsYmd						);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				codes.setValue("IFZET"			, trmsHms						);	//ï¿½ï¿½ï¿½Û½Ã°ï¿½
+				codes.setValue("IFNAM"			, "MAEILDO"						);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ID
 				
 				logger.debug("--------------parameter-----------");
 				logger.debug("BUKRS=1000,INT_BUKRS=" + eachMap.get("COOPCO_CD") 
@@ -1186,7 +1178,7 @@ public class EaseCommonUtil_SAP {
 */
 	
 	/**
-	 * ÇØ´ç °ü°è»çÀÇ ±âÇÁÆ®Ä«µå ÃæÀü/Ãë¼Ò ³»¿ª Àü¼Û ¿©ºÎ ¾÷µ¥ÀÌÆ®
+	 * ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	 * @param coopCoCd 
 	 * @param param - REQ_DT
 	 * @return resCd
@@ -1194,24 +1186,24 @@ public class EaseCommonUtil_SAP {
 	/*
 	private String updateGiftCardActvPtcl(String coopCoCd, Map<String, Object> param) {
 		
-		//À¯ÀúID ¼ÂÆÃ		
+		//ï¿½ï¿½ï¿½ï¿½ID ï¿½ï¿½ï¿½ï¿½		
 		callUser = (String) param.get("CALL_USER");
 		userId = setUserId(callUser);
 		
 		param.put("UPDR_ID", userId);
 		
-		if("7030".equals(coopCoCd)){			//¿¥Áî¾¾µå
+		if("7030".equals(coopCoCd)){			//ï¿½ï¿½ï¿½î¾¾ï¿½ï¿½
 			prCrdMapper.updateGiftCardActvPtcl7030(param);	
-		}else if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
+		}else if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			prCrdMapper.updateGiftCardActvPtcl7010(param);	
 		}				
 
-		return "00000"; //ÀÀ´äÄÚµå, Àü¼Û¼º°ø
+		return "00000"; //ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½, ï¿½ï¿½ï¿½Û¼ï¿½ï¿½ï¿½
 	}
 	*/
 	
 	/**
-	 * ÇØ´ç °ü°è»çÀÇ ±âÇÁÆ®Ä«µå ÃæÀü ¼Ò¸ê ³»¿ª Àü¼Û ¿©ºÎ ¾÷µ¥ÀÌÆ®
+	 * ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	 * @param coopCoCd 
 	 * @param param - REQ_DT
 	 * @return resCd
@@ -1219,22 +1211,22 @@ public class EaseCommonUtil_SAP {
 	/*
 	private String updateGiftCardActvXtnctPtcl(String coopCoCd, Map<String, Object> param) {
 		
-		//À¯ÀúID ¼ÂÆÃ		
+		//ï¿½ï¿½ï¿½ï¿½ID ï¿½ï¿½ï¿½ï¿½		
 		callUser = (String) param.get("CALL_USER");
 		userId = setUserId(callUser);
 		
 		param.put("UPDR_ID", userId);
 		
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			prCrdMapper.updateGiftCardActvXtnctPtcl7010(param);	
 		}				
 		
-		return "00000"; //ÀÀ´äÄÚµå, Àü¼Û¼º°ø
+		return "00000"; //ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½, ï¿½ï¿½ï¿½Û¼ï¿½ï¿½ï¿½
 	}
 	*/
 	
 	/**
-	 * ÇØ´ç °ü°è»çÀÇ ±âÇÁÆ®Ä«µå »ç¿ë ³»¿ª Àü¼Û ¿©ºÎ ¾÷µ¥ÀÌÆ®
+	 * ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	 * @param coopCoCd 
 	 * @param param - REQ_DT
 	 * @return resCd
@@ -1243,65 +1235,65 @@ public class EaseCommonUtil_SAP {
 	/*
 	private String updateGiftCardUsePtcl(String coopCoCd, Map<String, Object> param) {
 		
-		//À¯ÀúID ¼ÂÆÃ		
+		//ï¿½ï¿½ï¿½ï¿½ID ï¿½ï¿½ï¿½ï¿½		
 		callUser = (String) param.get("CALL_USER");
 		userId = setUserId(callUser);
 		
 		param.put("UPDR_ID", userId);
 		
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			prCrdMapper.updateGiftCardUsePtcl7010(param);	
 		}				
 		
-		return "00000"; //ÀÀ´äÄÚµå, Àü¼Û¼º°ø
+		return "00000"; //ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½, ï¿½ï¿½ï¿½Û¼ï¿½ï¿½ï¿½
 	}
 	*/
 	
 	/**
-	 * ±âÇÁÆ®Ä«µå È¯ºÒ ½ÅÃ» ³»¿ª Àü¼Û ¿©ºÎ ¾÷µ¥ÀÌÆ®
+	 * ï¿½ï¿½ï¿½ï¿½Æ®Ä«ï¿½ï¿½ È¯ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	 * @param coopCoCd 
-	 * @param param - REQ_DT È¯ºÒ¿äÃ»ÀÏ(YYYYMMDD)
-	 * @param param - CRD_ST Ä«µå »óÅÂ[92:È¯ºÒ]
-	 * @param param - REFD_ST È¯ºÒ »óÅÂ[01:È¯ºÒ½ÅÃ»]
-	 * @param param - REFD_ST_AFTER È¯ºÒ½ÅÃ» ¼º°ø ½Ã º¯È¯ÇÒ »óÅÂ°ª[03:È¯ºÒÁøÇàÁß]
-	 * @param giftCardRefdReqPtclList È¯ºÒ½ÅÃ»Ä«µå¸®½ºÆ®
+	 * @param param - REQ_DT È¯ï¿½Ò¿ï¿½Ã»ï¿½ï¿½(YYYYMMDD)
+	 * @param param - CRD_ST Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½[92:È¯ï¿½ï¿½]
+	 * @param param - REFD_ST È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½[01:È¯ï¿½Ò½ï¿½Ã»]
+	 * @param param - REFD_ST_AFTER È¯ï¿½Ò½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½[03:È¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]
+	 * @param giftCardRefdReqPtclList È¯ï¿½Ò½ï¿½Ã»Ä«ï¿½å¸®ï¿½ï¿½Æ®
 	 * @return resCd
 	 */
 	/*
 	private String updateGiftCardRefdReqPtcl(String coopCoCd, Map<String, Object> param, List<Map<String, Object>> giftCardRefdReqPtclList ){
-		//À¯ÀúID ¼ÂÆÃ		
+		//ï¿½ï¿½ï¿½ï¿½ID ï¿½ï¿½ï¿½ï¿½		
 		callUser = (String) param.get("CALL_USER");
 		userId = setUserId(callUser);
 		
 		param.put("UPDR_ID", userId);		
 		param.put("PARAM_LIST", giftCardRefdReqPtclList);
 		
-		if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
-			//1. Ä«µå¸¶½ºÅÍ ¾÷µ¥ÀÌÆ®
+		if("7010".equals(coopCoCd)){		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//1. Ä«ï¿½å¸¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 			prCrdMapper.updateGiftCardRefdReqPtclMaster(param);
 			
-			//2. È¯ºÒ ¿äÃ» ÀÌ·Â ÀûÀç
+			//2. È¯ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½
 			prCrdMapper.insertGiftCardRefdReqPtclHist(param);
 		}				
 
-		return "00000"; 	//ÀÀ´äÄÚµå, Àü¼Û¼º°ø
+		return "00000"; 	//ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½, ï¿½ï¿½ï¿½Û¼ï¿½ï¿½ï¿½
 	}
 */
 
 	
 	/**
-	 * ÇöÀç ½Ã°£ ¼ÂÆÃ
+	 * í˜„ì¬ ì‹œê°„ ì…‹íŒ…
 	 */
 	private void setCurDate() {
 		Date curDate = new Date();
-		trmsYmd = ymdFormat.format(curDate);	//Àü¼ÛÀÏÀÚ
-		trmsHms = hmsFormat.format(curDate);	//Àü¼Û½Ã°£
+		trmsYmd = ymdFormat.format(curDate);	//ì „ì†¡ì¼ì
+		trmsHms = hmsFormat.format(curDate);	//ì „ì†¡ì‹œê°„
 	}
 	
 	
 	/**
-	 * JCO ¿¬°á ÇÁ·ÎÆÛÆ¼ »ı¼º
-	 * @param COOPCO_CD °ü°è»ç ÄÚµå 	
+	 * JCO ì—°ê²° í”„ë¡œí¼í‹° ìƒì„±
+	 * @param COOPCO_CD ê´€ê³„ì‚¬ ì½”ë“œ 	
 	 */
 	/*
 	private String setConnectProperties(String coopCoCd) {
@@ -1309,7 +1301,7 @@ public class EaseCommonUtil_SAP {
 		Properties connectProperties = new Properties();
 		abapName = "";
 		
-		if("7030".equals(coopCoCd)){			//¿¥Áî¾¾Áî 
+		if("7030".equals(coopCoCd)){			//ì— ì¦ˆì”¨ì¦ˆ 
 			sapAshost	= JProperties.getString("msseed.erpSapJco.ashost");
 			sapSysnr	= JProperties.getString("msseed.erpSapJco.sysnr");
 			sapClient	= JProperties.getString("msseed.erpSapJco.client");
@@ -1317,7 +1309,7 @@ public class EaseCommonUtil_SAP {
 			sapPasswd	= JProperties.getString("msseed.erpSapJco.passwd");
 			sapLang		= JProperties.getString("msseed.erpSapJco.lang");
 			abapName = "7030_SAP_CONN";
-		}else if("7010".equals(coopCoCd)){		//¸ÅÀÏÀ¯¾÷
+		}else if("7010".equals(coopCoCd)){		//ë§¤ì¼ìœ ì—…
 			sapAshost	= JProperties.getString("maeil.erpSapJco.ashost");
 			sapSysnr	= JProperties.getString("maeil.erpSapJco.sysnr");
 			sapClient	= JProperties.getString("maeil.erpSapJco.client");
@@ -1327,14 +1319,14 @@ public class EaseCommonUtil_SAP {
 			abapName = "7010_SAP_CONN";
 		}
 		
-		connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, sapAshost);	//SAP È£½ºÆ® Á¤º¸
-		connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  sapSysnr);	//ÀÎ½ºÅÏ½º¹øÈ£
-		connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, sapClient);	//SAP Å¬¶óÀÌ¾ğÆ®
-		connectProperties.setProperty(DestinationDataProvider.JCO_USER,   sapUser);		//SAPÀ¯Àú¸í
-		connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, sapPasswd);	//SAP ÆĞ½º¿öµå
-		connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   sapLang);		//¾ğ¾î
+		connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, sapAshost);	//SAP í˜¸ìŠ¤íŠ¸ ì •ë³´
+		connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  sapSysnr);	//ì¸ìŠ¤í„´ìŠ¤ë²ˆí˜¸
+		connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, sapClient);	//SAP í´ë¼ì´ì–¸íŠ¸
+		connectProperties.setProperty(DestinationDataProvider.JCO_USER,   sapUser);		//SAPìœ ì €ëª…
+		connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, sapPasswd);	//SAP íŒ¨ìŠ¤ì›Œë“œ
+		connectProperties.setProperty(DestinationDataProvider.JCO_LANG,   sapLang);		//ì–¸ì–´
 		
-		//ÇÁ·ÎÆÛÆ¼¸¦ ÀÌ¿ëÇÏ¿© ¿¬°áÆÄÀÏÀ» »ı¼º. ½ÇÇàµÇ°í ÀÖ´Â ÀÀ¿ë½Ã½ºÅÛ °æ·Î¿¡ »ı¼ºµÊ.
+		//í”„ë¡œí¼í‹°ë¥¼ ì´ìš©í•˜ì—¬ ì—°ê²°íŒŒì¼ì„ ìƒì„±. ì‹¤í–‰ë˜ê³  ìˆëŠ” ì‘ìš©ì‹œìŠ¤í…œ ê²½ë¡œì— ìƒì„±ë¨.
 		createDestinationDataFile(abapName, connectProperties);
 		
 		return abapName;
@@ -1342,7 +1334,7 @@ public class EaseCommonUtil_SAP {
 */
 
 	/** 
-	 * sap ¿¬°áÆÄÀÏ »ı¼º
+	 * sap ì—°ê²°íŒŒì¼ ìƒì„±
 	 */
 	static void createDestinationDataFile(String destinationName, Properties connectProperties)
 	{
