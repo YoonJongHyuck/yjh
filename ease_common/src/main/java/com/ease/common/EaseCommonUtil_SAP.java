@@ -1336,6 +1336,7 @@ public class EaseCommonUtil_SAP {
 	/** 
 	 * sap 연결파일 생성
 	 */
+	/*
 	static void createDestinationDataFile(String destinationName, Properties connectProperties)
 	{
 		File destCfg = new File(destinationName+".jcoDestination");
@@ -1353,7 +1354,7 @@ public class EaseCommonUtil_SAP {
 			}
 		}
 	}
-
+*/
 	
 	
 }
