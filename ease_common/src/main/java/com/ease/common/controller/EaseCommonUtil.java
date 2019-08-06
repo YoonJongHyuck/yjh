@@ -1,4 +1,4 @@
-package com.ease.common;
+package com.ease.common.controller;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -43,7 +43,7 @@ public class EaseCommonUtil {
 	 */
 	public Map<String, Object> httpConnectionforJson(String apiUrl, String arrayObj) throws Exception{
 		
-		//ÇØ´çÇÔ¼ö È£Ãâ ¿¹
+		//ï¿½Ø´ï¿½ï¿½Ô¼ï¿½ È£ï¿½ï¿½ ï¿½ï¿½
 		/*
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -59,7 +59,7 @@ public class EaseCommonUtil {
 		
 //		logger.info("apiUrl : " + apiUrl);
 		
-		URL url 			  = new URL(apiUrl); 	// ¿äÃ»À» º¸³½ URL
+		URL url 			  = new URL(apiUrl); 	// ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ URL
 		String sendData 	  = arrayObj;
 		HttpURLConnection con = null;
 		StringBuffer buf 	  = new StringBuffer();
@@ -69,15 +69,15 @@ public class EaseCommonUtil {
 		try {
 			con = (HttpURLConnection)url.openConnection();
 			
-			con.setConnectTimeout(15000);		//¼­¹öÅë½Å timeout ¼³Á¤. 15ÃÊ
-			con.setReadTimeout(15000);			//½ºÆ®¸²ÀÐ±â timeout ¼³Á¤. 15ÃÊ
+			con.setConnectTimeout(15000);		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ timeout ï¿½ï¿½ï¿½ï¿½. 15ï¿½ï¿½
+			con.setReadTimeout(15000);			//ï¿½ï¿½Æ®ï¿½ï¿½ï¿½Ð±ï¿½ timeout ï¿½ï¿½ï¿½ï¿½. 15ï¿½ï¿½
 			
 			con.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
 		    con.setDoOutput(true);
 		    con.setRequestMethod("POST");
 		    con.connect();
 		    
-		    // ¼Û½ÅÇÒ µ¥ÀÌÅÍ Àü¼Û.
+		    // ï¿½Û½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 		    DataOutputStream dos = new DataOutputStream(con.getOutputStream());
 		    dos.write(sendData.getBytes("UTF-8"));
 		    dos.flush();
@@ -100,13 +100,13 @@ public class EaseCommonUtil {
 			    
 		    } else {
 		    	returnMap.put("RES_CD", "9999");
-		    	returnMap.put("RES_MSG", "HTTP Åë½Å Áß ¿¡·¯°¡ ¹ß»ýÇÏ¿´½À´Ï´Ù.");
+		    	returnMap.put("RES_MSG", "HTTP ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
 		    }
 		    
 		} catch (IOException e) {			
 			e.printStackTrace();
 	    	returnMap.put("RES_CD", "9999");
-	    	returnMap.put("RES_MSG", "½Ã½ºÅÛ ¿¡·¯°¡ ¹ß»ýÇÏ¿´½À´Ï´Ù.");
+	    	returnMap.put("RES_MSG", "ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
 		} finally {
 		    con.disconnect();
 		}

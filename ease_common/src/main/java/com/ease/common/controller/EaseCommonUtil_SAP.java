@@ -1,4 +1,4 @@
-package com.ease.common;
+package com.ease.common.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -1,4 +1,4 @@
-package com.ease.common;
+package com.ease.common.controller;
 
 import java.util.Map;
 import java.util.UUID;
