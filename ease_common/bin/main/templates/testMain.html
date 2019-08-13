@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>hello stranger</title>
+	<style>
+		.helper{boarder : 2px dotted red;}
+	</style>
+</head>
+<body>
+	<p th:text="'value is '+${value}"/>
+	<button a="#" id="button1">sortable start</button>
+	<button a="#" id="button2">sortable end</button>
+	<table border="1px solid">
+		<thead>
+			<th>No.</th><th>List</th>
+		</thead>
+		<tbody id="list">
+			<tr id="1"><th>1</th><th>fire</th></tr>
+			<tr id="2"><th>2</th><th>emblem</th></tr>
+			<tr id="3"><th>3</th><th>풍화설월</th></tr>
+		</tbody>
+	</table>
+	<div id="result"></div>		
+</body>
+
+
+<script src="js/jquery-2.2.3.min.js"></script>
+<script src="js/jquery-ui.js"></script>
+<!-- <script src="http://code.jquery.com/jquery-2.2.3.min.js"></script> -->
+<!-- <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script> -->
+<script>
+	$('#button1').on('click', click1);
+	$('#button2').on('click', click2);
+	
+	function click1(){
+		$('#list').sortable({
+			cusor:'move'	//아이콘형태
+			,items: 'tr'
+			,opacity : 0.5	//불투명도
+			,start : function(event, ui){	//드래그 시작 시 실행
+				console.log("drag start");
+			}
+			,update : function(event, ui){	//위치변화 시 실행
+				console.log("update");
+				$('#result').text($('#list').sortable('toArray'));
+			}		
+			,stop : function(event, ui){
+				console.log("drag stop");	//드래그 완료 시 실행
+			} 
+		}).disableSelection(); //내부요소 선택하지 못하도록		
+	}
+	
+	function click2(){
+		$('#list').sortable('destroy');
+	}
+	
+	
+// 	$(function(){
+// 		$('#list').sortable({
+// 			cusor:'move'	//아이콘형태
+// 			,opacity : 0.5
+// 			,update : function(e, ui){
+// 				$('#result').text($('#list').sortable('toArray'));
+// 			}
+// 		});
+// 	});
+</script>
+	
+</html>
