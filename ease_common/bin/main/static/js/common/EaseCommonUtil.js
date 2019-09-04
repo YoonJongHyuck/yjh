@@ -246,3 +246,54 @@ function getQuarterTerm(today){
 	
 	return resultTermDate;
 }
+
+/**
+ * hover event
+ * @param targetEl
+ * @returns
+ */
+function checkHoverEvent(targetEl){
+	if(targetEl.value == "55555"){
+		var $preTargetEl = $(targetEl).prev();
+		$preTargetEl.css({"color" : "#315ac7", "text-decoration" : "underline", "cursor" : "pointer"});
+		
+		$preTargetEl.hover(function(e){
+			viewPopup("on", e, "popupDiv");
+		}, function(e){
+			viewPopup("off", e, "popupDiv");
+		});
+		
+	}else{
+		console.log("NO");
+	}
+}
+
+
+/**
+ * hover popup
+ * @param status
+ * @param e
+ * @param popupDiv : 
+ * @returns
+ */
+function viewPopup(status, e, popupDiv){
+	if(status == "on"){		
+		var divTop = e.clientY - 50;	//상단 좌표 위치 안맞을시 e.pageY 
+		var divLeft = e.clientX;		//좌측 좌표 위치 안맞을시 e.pageX 
+		var serial = $(this).attr("serial"); 
+		var idx = $(this).attr("idx");		
+		var text = '<div style="padding : 1ex">';
+			text += '<span style="cursor:pointer;font-size:1.0em"> popup 완료 </span>';
+			text += '</div>';
+			
+		$('#'+popupDiv).empty().append(text); 
+		$('#'+popupDiv).css({ "top": divTop ,"left": divLeft , "position": "absolute", "background-color": "#cddbff", "border": "1px solid #a5b8ec"}).show();		
+	}else if(status == "off"){
+		$('#'+popupDiv).hide();
+	}
+}
+
+
+
+
+
