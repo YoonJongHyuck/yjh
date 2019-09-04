@@ -22,13 +22,19 @@
 		</tbody>
 	</table>
 	<div id="result"></div>		
+	
+	<p>	
+		<span>55555 입력 시 HOVER 셋팅</span>		
+		<input id="hoverTest" type="text" onchange="javascript:checkHoverEvent(this);"/>
+		<div id="popupDiv"></div>
+	</p>
 </body>
 
 
-<script src="js/jquery-2.2.3.min.js"></script>
-<script src="js/jquery-ui.js"></script>
-<!-- <script src="http://code.jquery.com/jquery-2.2.3.min.js"></script> -->
-<!-- <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script> -->
+<script src="js/jquery/jquery-2.2.3.min.js"></script>
+<script src="js/jquery/jquery-ui.js"></script>
+<script src="js/common/EaseCommonUtil.js"></script>
+
 <script>
 	$('#button1').on('click', click1);
 	$('#button2').on('click', click2);
@@ -55,16 +61,6 @@
 		$('#list').sortable('destroy');
 	}
 	
-	
-// 	$(function(){
-// 		$('#list').sortable({
-// 			cusor:'move'	//아이콘형태
-// 			,opacity : 0.5
-// 			,update : function(e, ui){
-// 				$('#result').text($('#list').sortable('toArray'));
-// 			}
-// 		});
-// 	});
 </script>
 	
 </html>
