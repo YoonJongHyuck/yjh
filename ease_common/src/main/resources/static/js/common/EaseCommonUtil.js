@@ -297,3 +297,40 @@ function viewPopup(status, e, popupDiv){
 
 
 
+/**
+ * checkSize
+ * 매우 느리니 추후 업데이트 필요함
+ * @returns
+ */
+function checkSize(){
+	var checkResult = true;
+	
+	var editorVal = $("#userWebEditor").val();
+	var vallength = editorVal.length;
+	var oneChar = "";
+	var valBtye = 0;
+	var valKBtye = 0;
+	var valMBtye = 0;
+	
+	for(var i=0; i<vallength; i++){
+		oneChar = editorVal.charAt(i);
+		if(escape(oneChar).length > 4){
+			valBtye += 2;	//한글 2Bytr
+		}else{
+			valBtye++;		//영문 등 나머지 1Byte
+		}
+	}
+	
+	valKBtye = (valBtye / 1024).toFixed(2);	//1KB=1024Byte
+	
+	if(valKBtye > 1800){
+		alert("입력 SIZE를 조절해 주세요. 현재 SIZE : "+valKBtye+"KB (제한 SIZE : 1800KB)");
+// 		checkResult = false;
+	}
+	
+	return checkResult;
+}
+
+
+
+
